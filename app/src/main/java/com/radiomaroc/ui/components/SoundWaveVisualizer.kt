@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue // ✅ هذا هو السطر المفقود
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -14,16 +14,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SoundWaveVisualizer(
+fun BigVisualizer(
     isPlaying: Boolean,
     modifier: Modifier = Modifier,
-    barCount: Int = 4,
-    barWidth: Dp = 3.dp,
-    barSpacing: Dp = 2.dp,
-    maxHeight: Dp = 20.dp,
+    barCount: Int = 24,
+    barWidth: Dp = 8.dp,
+    barSpacing: Dp = 3.dp,
+    maxHeight: Dp = 200.dp,
     color: Color = Color.White
 ) {
-    val transition = rememberInfiniteTransition(label = "wave")
+    val transition = rememberInfiniteTransition(label = "big_wave")
 
     Row(
         modifier = modifier,
@@ -31,12 +31,14 @@ fun SoundWaveVisualizer(
         verticalAlignment = Alignment.Bottom
     ) {
         repeat(barCount) { index ->
+            // جعل الأشرطة الوسطى أطول قليلاً لإعطاء شكل موجة
+            val baseMultiplier = if (index in (barCount / 3)..(barCount * 2 / 3)) 1f else 0.7f
             val height by transition.animateFloat(
-                initialValue = 0.2f,
-                targetValue = if (isPlaying) 1f else 0.2f,
+                initialValue = 0.15f,
+                targetValue = if (isPlaying) baseMultiplier else 0.15f,
                 animationSpec = infiniteRepeatable(
                     animation = tween(
-                        durationMillis = 300 + index * 100,
+                        durationMillis = 250 + (index % 5) * 80,
                         easing = LinearEasing
                     ),
                     repeatMode = RepeatMode.Reverse
@@ -47,7 +49,7 @@ fun SoundWaveVisualizer(
                 modifier = Modifier
                     .width(barWidth)
                     .height(maxHeight * height)
-                    .clip(RoundedCornerShape(1.dp))
+                    .clip(RoundedCornerShape(2.dp))
                     .background(color)
             )
         }
