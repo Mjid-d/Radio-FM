@@ -14,16 +14,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BigVisualizer(
+fun SoundWaveVisualizer(
     isPlaying: Boolean,
     modifier: Modifier = Modifier,
-    barCount: Int = 24,
-    barWidth: Dp = 8.dp,
-    barSpacing: Dp = 3.dp,
-    maxHeight: Dp = 200.dp,
+    barCount: Int = 4,
+    barWidth: Dp = 3.dp,
+    barSpacing: Dp = 2.dp,
+    maxHeight: Dp = 20.dp,
     color: Color = Color.White
 ) {
-    val transition = rememberInfiniteTransition(label = "big_wave")
+    val transition = rememberInfiniteTransition(label = "wave")
 
     Row(
         modifier = modifier,
@@ -31,14 +31,12 @@ fun BigVisualizer(
         verticalAlignment = Alignment.Bottom
     ) {
         repeat(barCount) { index ->
-            // جعل الأشرطة الوسطى أطول قليلاً لإعطاء شكل موجة
-            val baseMultiplier = if (index in (barCount / 3)..(barCount * 2 / 3)) 1f else 0.7f
             val height by transition.animateFloat(
-                initialValue = 0.15f,
-                targetValue = if (isPlaying) baseMultiplier else 0.15f,
+                initialValue = 0.2f,
+                targetValue = if (isPlaying) 1f else 0.2f,
                 animationSpec = infiniteRepeatable(
                     animation = tween(
-                        durationMillis = 250 + (index % 5) * 80,
+                        durationMillis = 300 + index * 100,
                         easing = LinearEasing
                     ),
                     repeatMode = RepeatMode.Reverse
@@ -49,7 +47,7 @@ fun BigVisualizer(
                 modifier = Modifier
                     .width(barWidth)
                     .height(maxHeight * height)
-                    .clip(RoundedCornerShape(2.dp))
+                    .clip(RoundedCornerShape(1.dp))
                     .background(color)
             )
         }
