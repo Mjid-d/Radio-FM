@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -42,7 +41,7 @@ fun BottomPlayer(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // معلومات المحطة (يسار)
+            // معلومات المحطة
             Column(Modifier.weight(1f)) {
                 Text(
                     text = station.name,
@@ -62,7 +61,20 @@ fun BottomPlayer(
                 )
             }
 
-            // أزرار التحكم (يمين)
+            // التأثير الصوتي
+            SoundWaveVisualizer(
+                isPlaying = isPlaying,
+                modifier = Modifier.height(16.dp),
+                barCount = 4,
+                barWidth = 3.dp,
+                barSpacing = 2.dp,
+                maxHeight = 16.dp,
+                color = GoldPrimary
+            )
+
+            Spacer(Modifier.width(12.dp))
+
+            // أزرار التحكم
             PlayerButton(
                 icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 onClick = onToggle
@@ -71,15 +83,6 @@ fun BottomPlayer(
             PlayerButton(
                 icon = Icons.Default.Stop,
                 onClick = onStop
-            )
-
-            // ✅ أيقونة إضافية لملء الفراغ على أقصى اليمين
-            Spacer(Modifier.width(12.dp))
-            Icon(
-                imageVector = Icons.Default.Equalizer,
-                contentDescription = null,
-                tint = GoldPrimary.copy(alpha = 0.4f),
-                modifier = Modifier.size(28.dp)
             )
         }
     }
