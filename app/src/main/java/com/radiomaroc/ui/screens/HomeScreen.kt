@@ -1,6 +1,7 @@
 package com.radiomaroc.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusRestorer
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -78,6 +79,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 .padding(padding)
         ) {
             LazyColumn(
+                modifier = Modifier.focusRestorer(), // ✅ يحل مشكلة القفز بين العناصر
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
