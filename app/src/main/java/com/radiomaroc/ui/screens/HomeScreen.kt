@@ -1,7 +1,7 @@
 package com.radiomaroc.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.focusRestorer
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,7 +37,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         text = "radio FM",
                         color = GoldPrimary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 26.sp
+                        fontSize = 22.sp
                     )
                 },
                 actions = {
@@ -45,14 +45,16 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "بحث",
-                            tint = GoldPrimary
+                            tint = GoldPrimary,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                     IconButton(onClick = { /* إعدادات */ }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "إعدادات",
-                            tint = GoldPrimary
+                            tint = GoldPrimary,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 },
@@ -79,9 +81,9 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 .padding(padding)
         ) {
             LazyColumn(
-                modifier = Modifier.focusRestorer(), // ✅ يحل مشكلة القفز بين العناصر
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                modifier = Modifier.focusGroup(), // ✅ بديل يعمل مع إصدار Compose الحالي
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(vm.stations, key = { it.id }) { station ->
                     StationCard(
