@@ -38,7 +38,7 @@ fun SplashScreen() {
                 text = "radio FM",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
-                color = GoldPrimary
+                color = GoldPrimary // لون أبيض
             )
             Spacer(Modifier.height(8.dp))
             Text(
