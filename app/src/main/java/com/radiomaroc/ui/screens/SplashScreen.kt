@@ -26,7 +26,6 @@ fun SplashScreen() {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // أيقونة برمجية مدمجة، لا تحتاج أي صورة خارجية
             Box(
                 modifier = Modifier
                     .size(120.dp)
