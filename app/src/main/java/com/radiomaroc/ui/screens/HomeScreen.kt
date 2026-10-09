@@ -22,7 +22,6 @@ import com.radiomaroc.viewmodel.RadioViewModel
 
 @Composable
 fun HomeScreen(vm: RadioViewModel = viewModel()) {
-
     val currentStation by vm.playerManager.currentStation.collectAsState()
     val isPlaying by vm.playerManager.isPlaying.collectAsState()
     val isBuffering by vm.playerManager.isBuffering.collectAsState()
