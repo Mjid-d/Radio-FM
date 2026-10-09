@@ -27,7 +27,7 @@ fun SplashScreen() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = painterResource(id = R.drawable.app_logo),
+                painter = painterResource(id = R.drawable.ic_radio), // تم التغيير للأيقونة القديمة
                 contentDescription = null,
                 modifier = Modifier
                     .size(120.dp)
