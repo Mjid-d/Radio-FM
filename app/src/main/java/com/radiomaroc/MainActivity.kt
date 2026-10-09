@@ -5,11 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.radiomaroc.ui.screens.HomeScreen
+import com.radiomaroc.ui.screens.SplashScreen
 import com.radiomaroc.ui.theme.DarkBackground
 import com.radiomaroc.ui.theme.RadioMarocTheme
-import com.radiomaroc.ui.theme.TextPrimary
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +22,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = DarkBackground
                 ) {
-                    Text(text = "التطبيق يعمل الآن!", color = TextPrimary)
+                    var showSplash by remember { mutableStateOf(true) }
+                    LaunchedEffect(Unit) {
+                        delay(1500) // مدة عرض شاشة الإقلاع
+                        showSplash = false
+                    }
+                    if (showSplash) {
+                        SplashScreen()
+                    } else {
+                        HomeScreen()
+                    }
                 }
             }
         }
