@@ -1,17 +1,11 @@
 package com.radiomaroc.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,33 +29,15 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 title = {
                     Text(
                         text = "radio FM",
-                        color = GoldPrimary,
+                        color = GoldPrimary, // أبيض
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
+                        fontSize = 24.sp
                     )
                 },
-                actions = {
-                    IconButton(onClick = { /* بحث */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "بحث",
-                            tint = GoldPrimary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    IconButton(onClick = { /* إعدادات */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "إعدادات",
-                            tint = GoldPrimary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                },
+                // تم إزالة الأيقونات من هنا ونقلها للأسفل
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = DarkBackground,
-                    titleContentColor = GoldPrimary,
-                    actionIconContentColor = GoldPrimary
+                    titleContentColor = GoldPrimary
                 )
             )
         },
@@ -81,9 +57,8 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 .padding(padding)
         ) {
             LazyColumn(
-                modifier = Modifier.focusGroup(), // ✅ بديل يعمل مع إصدار Compose الحالي
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                contentPadding = PaddingValues(bottom = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 items(vm.stations, key = { it.id }) { station ->
                     StationCard(
