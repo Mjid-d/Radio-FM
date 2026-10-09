@@ -31,14 +31,14 @@ fun BottomPlayer(
     if (station == null) return
 
     Surface(
-        color = SurfaceDark,
-        shadowElevation = 8.dp,
+        color = DarkBackground, // ✅ تم تغيير اللون ليكون نفس لون الخلفية
+        shadowElevation = 0.dp, // ✅ تم إزالة الظل ليكون اللون موحداً تماماً
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
