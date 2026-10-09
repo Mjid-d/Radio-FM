@@ -1,0 +1,2 @@
+-keep class com.radiomaroc.** { *; }
+-keep class androidx.media3.** { *; }
