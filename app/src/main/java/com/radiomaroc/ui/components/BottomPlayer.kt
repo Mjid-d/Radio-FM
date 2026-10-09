@@ -41,7 +41,6 @@ fun BottomPlayer(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // معلومات المحطة
             Column(Modifier.weight(1f)) {
                 Text(
                     text = station.name,
@@ -61,7 +60,6 @@ fun BottomPlayer(
                 )
             }
 
-            // التأثير الصوتي
             SoundWaveVisualizer(
                 isPlaying = isPlaying,
                 modifier = Modifier.height(16.dp),
@@ -74,7 +72,6 @@ fun BottomPlayer(
 
             Spacer(Modifier.width(12.dp))
 
-            // أزرار التحكم
             PlayerButton(
                 icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 onClick = onToggle
