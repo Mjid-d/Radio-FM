@@ -29,12 +29,12 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 title = {
                     Text(
                         text = "radio FM",
-                        color = GoldPrimary, // أبيض
+                        color = GoldPrimary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp
                     )
                 },
-                // تم إزالة الأيقونات من هنا ونقلها للأسفل
+                // تم نقل الأيقونات إلى الأسفل
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = DarkBackground,
                     titleContentColor = GoldPrimary
