@@ -4,9 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,7 @@ import com.radiomaroc.ui.components.StationCard
 import com.radiomaroc.ui.theme.*
 import com.radiomaroc.viewmodel.RadioViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val currentStation by vm.playerManager.currentStation.collectAsState()
@@ -26,7 +28,41 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val isBuffering by vm.playerManager.isBuffering.collectAsState()
 
     Scaffold(
-        containerColor = DarkBackground, // ✅ لون الخلفية الموحد
+        containerColor = DarkBackground,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "radio FM",
+                        color = GoldPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 26.sp
+                    )
+                },
+                actions = {
+                    // ✅ أيقونات إضافية لملء الشريط العلوي
+                    IconButton(onClick = { /* وظيفة البحث مستقبلاً */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "بحث",
+                            tint = GoldPrimary
+                        )
+                    }
+                    IconButton(onClick = { /* وظيفة الإعدادات مستقبلاً */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "إعدادات",
+                            tint = GoldPrimary
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = DarkBackground,
+                    titleContentColor = GoldPrimary,
+                    actionIconContentColor = GoldPrimary
+                )
+            )
+        },
         bottomBar = {
             BottomPlayer(
                 station = currentStation,
@@ -42,25 +78,16 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = "radio FM",
-                    color = GoldPrimary, // لون النص فقط (أزرق)
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp,
-                    modifier = Modifier.padding(20.dp)
-                )
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(vm.stations, key = { it.id }) { station ->
-                        StationCard(
-                            station = station,
-                            isActive = currentStation?.id == station.id,
-                            onClick = { vm.playerManager.playStation(station) }
-                        )
-                    }
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(vm.stations, key = { it.id }) { station ->
+                    StationCard(
+                        station = station,
+                        isActive = currentStation?.id == station.id,
+                        onClick = { vm.playerManager.playStation(station) }
+                    )
                 }
             }
         }
