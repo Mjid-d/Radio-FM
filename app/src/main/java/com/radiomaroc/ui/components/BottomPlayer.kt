@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -41,11 +42,12 @@ fun BottomPlayer(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // معلومات المحطة (يسار)
             Column(Modifier.weight(1f)) {
                 Text(
                     text = station.name,
                     style = MaterialTheme.typography.titleLarge,
-                    color = GoldPrimary, // ✅ نص ذهبي
+                    color = GoldPrimary,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
@@ -56,12 +58,11 @@ fun BottomPlayer(
                         else -> "متوقف • ${station.city}"
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isPlaying) SuccessGreen else GoldLight // ✅ نص ذهبي فاتح
+                    color = if (isPlaying) SuccessGreen else GoldLight
                 )
             }
 
-            Spacer(Modifier.width(8.dp))
-
+            // أزرار التحكم (يمين)
             PlayerButton(
                 icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 onClick = onToggle
@@ -70,6 +71,15 @@ fun BottomPlayer(
             PlayerButton(
                 icon = Icons.Default.Stop,
                 onClick = onStop
+            )
+
+            // ✅ أيقونة إضافية لملء الفراغ على أقصى اليمين
+            Spacer(Modifier.width(12.dp))
+            Icon(
+                imageVector = Icons.Default.Equalizer,
+                contentDescription = null,
+                tint = GoldPrimary.copy(alpha = 0.4f),
+                modifier = Modifier.size(28.dp)
             )
         }
     }
@@ -97,7 +107,7 @@ private fun PlayerButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (focused) DarkBackground else GoldPrimary, // ✅ أيقونة ذهبية
+            tint = if (focused) DarkBackground else GoldPrimary,
             modifier = Modifier.size(24.dp)
         )
     }
