@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     var showSplash by remember { mutableStateOf(true) }
                     LaunchedEffect(Unit) {
-                        delay(1500) // مدة عرض شاشة الإقلاع
+                        delay(5000) // ✅ تم تغيير المدة من 1500 إلى 5000 (5 ثوانٍ)
                         showSplash = false
                     }
                     if (showSplash) {
