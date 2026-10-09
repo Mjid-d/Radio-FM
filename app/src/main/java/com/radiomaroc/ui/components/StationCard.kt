@@ -29,6 +29,7 @@ import com.radiomaroc.ui.theme.*
 fun StationCard(
     station: RadioStation,
     isActive: Boolean,
+    isPlaying: Boolean,
     onClick: () -> Unit
 ) {
     var focused by remember { mutableStateOf(false) }
@@ -55,32 +56,47 @@ fun StationCard(
             .onFocusChanged { focused = it.isFocused }
             .focusable()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // أيقونة التشغيل (يسار)
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(if (isActive) GoldPrimary else SurfaceLight),
-                contentAlignment = Alignment.Center
+            // الجانب الأيسر: الأيقونة + التأثير الصوتي
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(44.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    tint = if (isActive) DarkBackground else GoldPrimary,
-                    modifier = Modifier.size(24.dp)
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(if (isActive) GoldPrimary else SurfaceLight),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        tint = if (isActive) DarkBackground else GoldPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(Modifier.height(2.dp))
+                SoundWaveVisualizer(
+                    isPlaying = isPlaying,
+                    modifier = Modifier.height(10.dp),
+                    barCount = 3,
+                    barWidth = 3.dp,
+                    barSpacing = 2.dp,
+                    maxHeight = 10.dp,
+                    color = GoldPrimary
                 )
             }
 
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(12.dp))
 
-            // اسم المحطة والوصف (الوسط)
+            // الوسط: اسم المحطة والوصف
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = station.name,
@@ -95,12 +111,12 @@ fun StationCard(
                 )
             }
 
-            // ✅ أيقونة إضافية لملء الجانب الأيمن
+            // الجانب الأيمن: أيقونة إضافية
             Icon(
                 imageVector = Icons.Default.SignalCellularAlt,
                 contentDescription = null,
                 tint = GoldPrimary.copy(alpha = 0.4f),
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(24.dp)
             )
         }
     }
