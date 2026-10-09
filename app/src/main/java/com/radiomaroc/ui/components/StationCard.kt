@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SignalCellularAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,6 +62,7 @@ fun StationCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
+            // أيقونة التشغيل (يسار)
             Box(
                 modifier = Modifier
                     .size(44.dp)
@@ -71,26 +73,35 @@ fun StationCard(
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
                     contentDescription = null,
-                    tint = if (isActive) DarkBackground else GoldPrimary, // ✅ أيقونة ذهبية
+                    tint = if (isActive) DarkBackground else GoldPrimary,
                     modifier = Modifier.size(24.dp)
                 )
             }
 
             Spacer(Modifier.width(16.dp))
 
+            // اسم المحطة والوصف (الوسط)
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = station.name,
                     style = MaterialTheme.typography.titleLarge,
-                    color = GoldPrimary, // ✅ نص ذهبي دائماً
+                    color = GoldPrimary,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "${station.city} • ${station.category}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = GoldLight // ✅ نص فرعي ذهبي فاتح
+                    color = GoldLight
                 )
             }
+
+            // ✅ أيقونة إضافية لملء الجانب الأيمن
+            Icon(
+                imageVector = Icons.Default.SignalCellularAlt,
+                contentDescription = null,
+                tint = GoldPrimary.copy(alpha = 0.4f),
+                modifier = Modifier.size(28.dp)
+            )
         }
     }
 }
