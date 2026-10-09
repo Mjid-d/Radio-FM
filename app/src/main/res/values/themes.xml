@@ -1,8 +1,8 @@
 <resources>
     <style name="Theme.RadioMaroc" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">#0F1C2E</item>
-        <item name="android:statusBarColor">#0F1C2E</item>
-        <item name="android:navigationBarColor">#0F1C2E</item>
+        <item name="android:windowBackground">#021734</item>
+        <item name="android:statusBarColor">#021734</item>
+        <item name="android:navigationBarColor">#021734</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
     </style>
