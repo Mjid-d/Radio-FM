@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.radiomaroc.ui.components.BigVisualizer
 import com.radiomaroc.ui.theme.*
 import com.radiomaroc.viewmodel.RadioViewModel
 
@@ -28,7 +27,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val currentStation by vm.playerManager.currentStation.collectAsState()
     val isPlaying by vm.playerManager.isPlaying.collectAsState()
 
-    // عند فتح التطبيق، شغّل أول إذاعة تلقائياً إن لم تكن هناك إذاعة
     LaunchedEffect(Unit) {
         if (currentStation == null && vm.stations.isNotEmpty()) {
             vm.playIndex(0)
@@ -52,20 +50,16 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* قائمة مستقبلاً */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "القائمة",
-                            tint = Color.White
-                        )
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.Menu, "القائمة", tint = Color.White)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* بحث */ }) {
-                        Icon(Icons.Default.Search, null, tint = Color.White)
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.Search, "بحث", tint = Color.White)
                     }
-                    IconButton(onClick = { /* إعدادات */ }) {
-                        Icon(Icons.Default.Settings, null, tint = Color.White)
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.Settings, "إعدادات", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkBackground)
@@ -79,18 +73,16 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
 
-            // ===== الجزء العلوي: الغلاف + المؤثر الصوتي =====
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                // الغلاف (مربع أبيض مع أيقونة الراديو + الرقم + اسم الإذاعة)
+                // الغلاف
                 Box(
                     modifier = Modifier
-                        .weight(0.38f)
+                        .weight(0.4f)
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color.White),
@@ -119,30 +111,39 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     }
                 }
 
-                Spacer(Modifier.width(20.dp))
+                Spacer(Modifier.width(24.dp))
 
-                // المؤثر الصوتي الكبير
-                Box(
-                    modifier = Modifier
-                        .weight(0.62f)
-                        .fillMaxHeight(),
-                    contentAlignment = Alignment.Center
+                // معلومات الإذاعة (بدلاً من التأثير الصوتي)
+                Column(
+                    modifier = Modifier.weight(0.6f),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    BigVisualizer(
-                        isPlaying = isPlaying,
-                        modifier = Modifier.height(180.dp),
-                        barCount = 22,
-                        barWidth = 8.dp,
-                        barSpacing = 3.dp,
-                        maxHeight = 180.dp,
-                        color = Color.White
+                    Icon(
+                        imageVector = Icons.Default.Radio,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(64.dp)
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = station?.name ?: "",
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = station?.category ?: "",
+                        color = TextSecondary,
+                        fontSize = 16.sp
                     )
                 }
             }
 
             Spacer(Modifier.height(24.dp))
 
-            // ===== أزرار التحكم السفلية =====
+            // أزرار التحكم
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,13 +151,10 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // زر المفضلة
-                ControlIcon(Icons.Default.FavoriteBorder) { /* مفضلة مستقبلاً */ }
+                ControlIcon(Icons.Default.FavoriteBorder) { }
+                ControlIcon(Icons.Default.Equalizer) { }
 
-                // زر المشغل/المعادل
-                ControlIcon(Icons.Default.Equalizer) { /* معادل مستقبلاً */ }
-
-                // زر التشغيل/الإيقاف الرئيسي (كبير)
+                // زر التشغيل/الإيقاف
                 Box(
                     modifier = Modifier
                         .size(72.dp)
@@ -177,10 +175,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     }
                 }
 
-                // التالي
                 ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
-
-                // إيقاف
                 ControlIcon(Icons.Default.Stop) { vm.playerManager.stop() }
             }
         }
