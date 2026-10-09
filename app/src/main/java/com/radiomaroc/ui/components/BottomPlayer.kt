@@ -31,8 +31,8 @@ fun BottomPlayer(
     if (station == null) return
 
     Surface(
-        color = DarkBackground, // ✅ تم تغيير اللون ليكون نفس لون الخلفية
-        shadowElevation = 0.dp, // ✅ تم إزالة الظل ليكون اللون موحداً تماماً
+        color = DarkBackground,
+        shadowElevation = 0.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -45,7 +45,7 @@ fun BottomPlayer(
                 Text(
                     text = station.name,
                     style = MaterialTheme.typography.titleLarge,
-                    color = TextPrimary,
+                    color = GoldPrimary, // ✅ نص ذهبي
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
@@ -56,7 +56,7 @@ fun BottomPlayer(
                         else -> "متوقف • ${station.city}"
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isPlaying) SuccessGreen else TextSecondary
+                    color = if (isPlaying) SuccessGreen else GoldLight // ✅ نص ذهبي فاتح
                 )
             }
 
@@ -97,7 +97,7 @@ private fun PlayerButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (focused) DarkBackground else TextPrimary,
+            tint = if (focused) DarkBackground else GoldPrimary, // ✅ أيقونة ذهبية
             modifier = Modifier.size(24.dp)
         )
     }
