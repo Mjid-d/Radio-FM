@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,10 +25,8 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val isPlaying by vm.playerManager.isPlaying.collectAsState()
     val isBuffering by vm.playerManager.isBuffering.collectAsState()
 
-    // ⚠️ لا يوجد أي تدرج هنا، فقط لون داكن موحد (DarkBackground)
-
     Scaffold(
-        containerColor = DarkBackground, // الخلفية هي اللون الأصلي الداكن
+        containerColor = DarkBackground, // ✅ لون الخلفية الموحد
         bottomBar = {
             BottomPlayer(
                 station = currentStation,
@@ -46,7 +45,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = "radio FM",
-                    color = GoldPrimary,
+                    color = GoldPrimary, // لون النص فقط (أزرق)
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
                     modifier = Modifier.padding(20.dp)
