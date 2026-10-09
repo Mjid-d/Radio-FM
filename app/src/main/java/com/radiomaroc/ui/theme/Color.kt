@@ -2,20 +2,20 @@ package com.radiomaroc.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// الألوان الأساسية - أزرق ملكي أنيق (بديل الذهبي)
-val GoldPrimary = Color(0xFF4FA8E0)      // أزرق فاتح جذاب (الاسم محفوظ للتوافق)
-val GoldLight = Color(0xFF74BFF0)        // أزرق أفتح للتركيز
+// الألوان الأساسية (الذهبي للأيقونات والعناوين)
+val GoldPrimary = Color(0xFFF4D078)      // اللون الذهبي للأيقونات
+val GoldLight = Color(0xFFFFE0A0)        // ذهبي فاتح عند التركيز
 val DeepRed = Color(0xFF8B0000)
-val RadioRed = Color(0xFFC0392B)         // أحمر للتنبيه
+val RadioRed = Color(0xFFC0392B)
 
-// الخلفيات - أزرق ليلي أنيق (بدون أسود)
-val DarkBackground = Color(0xFF0F1C2E)   // خلفية كحلية داكنة
-val SurfaceDark = Color(0xFF1A2B42)      // بطاقة كحلية
-val SurfaceLight = Color(0xFF253D5A)     // بطاقة كحلية فاتحة
+// الخلفيات (الأزرق الكحلي الداكن جداً)
+val DarkBackground = Color(0xFF021734)   // لون الخلفية الرئيسي
+val SurfaceDark = Color(0xFF0A2647)      // لون البطاقات (أفتح قليلاً لكي تظهر)
+val SurfaceLight = Color(0xFF113A6B)     // لون البطاقة عند التركيز
 
 // النصوص
-val TextPrimary = Color(0xFFE8EEF4)      // أبيض مائل للأزرق
-val TextSecondary = Color(0xFFA8B5C5)    // رمادي أزرق
+val TextPrimary = Color(0xFFF5F5F5)      // نص أبيض
+val TextSecondary = Color(0xFFB0C0D0)    // نص رمادي مزرق
 
 // ألوان إضافية
 val AccentBlue = Color(0xFF3B82F6)
