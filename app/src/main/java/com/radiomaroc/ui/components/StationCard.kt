@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,7 +34,7 @@ fun StationCard(
     var focused by remember { mutableStateOf(false) }
 
     val borderColor = when {
-        focused -> GoldLight
+        focused -> GoldPrimary
         isActive -> GoldPrimary
         else -> SurfaceLight
     }
@@ -50,12 +49,11 @@ fun StationCard(
                 else Brush.linearGradient(listOf(SurfaceDark, SurfaceDark))
             )
             .border(
-                BorderStroke(if (focused || isActive) 2.dp else 1.dp, borderColor),
+                BorderStroke(2.dp, borderColor), // ✅ ثبتنا حجم الإطار عند 2.dp دائماً
                 RoundedCornerShape(12.dp)
             )
             .onFocusChanged { focused = it.isFocused }
-            .focusable()
-            .clickable { onClick() }
+            .clickable { onClick() } // clickable يجعل العنصر قابلاً للتركيز تلقائياً
             .padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.CenterStart
     ) {
