@@ -9,8 +9,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,12 +24,10 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val isPlaying by vm.playerManager.isPlaying.collectAsState()
     val isBuffering by vm.playerManager.isBuffering.collectAsState()
 
-    val gradientBrush = Brush.verticalGradient(
-        colors = listOf(Color(0xFF2C3E50), Color(0xFF0F0E17))
-    )
+    // ⚠️ لا يوجد أي تدرج هنا، فقط لون داكن موحد (DarkBackground)
 
     Scaffold(
-        containerColor = Color.Transparent,
+        containerColor = DarkBackground, // الخلفية هي اللون الأصلي الداكن
         bottomBar = {
             BottomPlayer(
                 station = currentStation,
@@ -45,7 +41,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(gradientBrush)
                 .padding(padding)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
