@@ -40,15 +40,14 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     )
                 },
                 actions = {
-                    // ✅ أيقونات إضافية لملء الشريط العلوي
-                    IconButton(onClick = { /* وظيفة البحث مستقبلاً */ }) {
+                    IconButton(onClick = { /* بحث */ }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "بحث",
                             tint = GoldPrimary
                         )
                     }
-                    IconButton(onClick = { /* وظيفة الإعدادات مستقبلاً */ }) {
+                    IconButton(onClick = { /* إعدادات */ }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "إعدادات",
@@ -86,6 +85,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     StationCard(
                         station = station,
                         isActive = currentStation?.id == station.id,
+                        isPlaying = isPlaying && currentStation?.id == station.id,
                         onClick = { vm.playerManager.playStation(station) }
                     )
                 }
