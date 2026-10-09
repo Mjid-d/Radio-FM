@@ -71,7 +71,7 @@ fun StationCard(
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
                     contentDescription = null,
-                    tint = if (isActive) DarkBackground else TextSecondary,
+                    tint = if (isActive) DarkBackground else GoldPrimary, // ✅ أيقونة ذهبية
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -82,13 +82,13 @@ fun StationCard(
                 Text(
                     text = station.name,
                     style = MaterialTheme.typography.titleLarge,
-                    color = if (isActive) GoldPrimary else TextPrimary,
+                    color = GoldPrimary, // ✅ نص ذهبي دائماً
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "${station.city} • ${station.category}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = GoldLight // ✅ نص فرعي ذهبي فاتح
                 )
             }
         }
