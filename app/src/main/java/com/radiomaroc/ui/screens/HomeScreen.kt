@@ -3,9 +3,13 @@ package com.radiomaroc.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,15 +33,34 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 title = {
                     Text(
                         text = "radio FM",
-                        color = GoldPrimary,
+                        color = GoldPrimary, // أبيض
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp
                     )
                 },
-                // تم نقل الأيقونات إلى الأسفل
+                // ✅ إعادة الأيقونات للشريط العلوي بدون خلفية
+                actions = {
+                    IconButton(onClick = { /* بحث مستقبلاً */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "بحث",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    IconButton(onClick = { /* إعدادات مستقبلاً */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "إعدادات",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = DarkBackground,
-                    titleContentColor = GoldPrimary
+                    titleContentColor = GoldPrimary,
+                    actionIconContentColor = Color.White
                 )
             )
         },
