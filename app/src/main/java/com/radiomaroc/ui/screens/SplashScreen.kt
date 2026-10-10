@@ -28,15 +28,15 @@ fun SplashScreen() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = painterResource(id = R.drawable.radiofm), // ✅ اسم صورتك
+                painter = painterResource(id = R.drawable.radiotv), // ✅ اسم صورتك الجديدة
                 contentDescription = null,
                 modifier = Modifier
-                    .size(150.dp)
-                    .clip(RoundedCornerShape(25.dp))
+                    .size(180.dp)
+                    .clip(RoundedCornerShape(30.dp))
             )
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(24.dp))
             Text(
-                text = "radio FM",
+                text = "Radio FM",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -45,7 +45,7 @@ fun SplashScreen() {
             Text(
                 text = "استمع إلى جميع الإذاعات المغربية",
                 style = MaterialTheme.typography.bodyLarge,
-                color = TextSecondary
+                color = Color.LightGray
             )
         }
     }
