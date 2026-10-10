@@ -24,14 +24,7 @@ fun WeatherWidget(weather: WeatherData?) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.horizontalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.08f),
-                        Color.White.copy(alpha = 0.03f)
-                    )
-                )
-            )
+            .background(Brush.horizontalGradient(colors = listOf(Color.White.copy(alpha = 0.08f), Color.White.copy(alpha = 0.03f))))
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Row(
@@ -40,38 +33,16 @@ fun WeatherWidget(weather: WeatherData?) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = weather.weatherEmoji,
-                    fontSize = 32.sp
-                )
+                Text(text = weather.weatherEmoji, fontSize = 32.sp)
                 Spacer(Modifier.width(10.dp))
                 Column {
-                    Text(
-                        text = "${weather.temperature}°",
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = weather.weatherDescription,
-                        color = Color.White.copy(alpha = 0.6f),
-                        fontSize = 12.sp
-                    )
+                    Text(text = "${weather.temperature}°", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(text = weather.weatherDescription, color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
                 }
             }
-
             Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = weather.cityName,
-                    color = Color.White,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = weather.currentTime,
-                    color = Color.White.copy(alpha = 0.6f),
-                    fontSize = 13.sp
-                )
+                Text(text = weather.cityName, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                Text(text = weather.currentTime, color = Color.White.copy(alpha = 0.6f), fontSize = 13.sp)
             }
         }
     }
