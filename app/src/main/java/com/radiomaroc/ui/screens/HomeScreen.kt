@@ -1,11 +1,11 @@
 package com.radiomaroc.ui.screens
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -16,14 +16,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,7 +92,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(16.dp))
 
-                // ===== الجزء المركزي: الأيقونة الكلاسيكية مع الذبذبات =====
+                // ===== الجزء المركزي: الأيقونة الكلاسيكية =====
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -187,7 +185,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     }
 }
 
-// ✅ أيقونة راديو كلاسيكية مع ذبذبات متحركة
+// ✅ أيقونة راديو كلاسيكية (بدون تعقيدات)
 @Composable
 private fun ClassicRadioIcon(
     isPlaying: Boolean,
@@ -195,79 +193,94 @@ private fun ClassicRadioIcon(
 ) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // جسم الراديو
-        Box(
-            modifier = Modifier.size(120.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
-                val w = size.width
-                val h = size.height
-                val stroke = Stroke(width = 4.dp.toPx())
+    // ✅ نقرأ قيم الأنيميشن خارج الـ Canvas
+    val bar1 by transition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = if (isPlaying) 1.0f else 0.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(400, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "bar1"
+    )
+    val bar2 by transition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = if (isPlaying) 1.0f else 0.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(550, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "bar2"
+    )
+    val bar3 by transition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = if (isPlaying) 1.0f else 0.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(700, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "bar3"
+    )
 
-                // الهوائي
-                val antennaPath = Path().apply {
-                    moveTo(w * 0.60f, h * 0.30f)
-                    lineTo(w * 0.88f, h * 0.10f)
-                }
-                drawPath(antennaPath, tint, style = stroke)
+    Canvas(modifier = Modifier.size(120.dp)) {
+        val w = size.width
+        val h = size.height
+        val stroke = Stroke(width = 4.dp.toPx())
 
-                // جسم الراديو (مستطيل مستدير)
-                val bodyLeft = w * 0.18f
-                val bodyTop = h * 0.32f
-                val bodyRight = w * 0.82f
-                val bodyBottom = h * 0.78f
-                drawRoundRect(
-                    color = tint,
-                    topLeft = Offset(bodyLeft, bodyTop),
-                    size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(10.dp.toPx()),
-                    style = stroke
-                )
-
-                // الشاشة الداخلية (مستطيل صغير أعلى)
-                drawRect(
-                    color = tint,
-                    topLeft = Offset(w * 0.25f, h * 0.40f),
-                    size = Size(w * 0.40f, h * 0.12f)
-                )
-
-                // قرص التوليف (دائرة سفلية يسار)
-                drawCircle(
-                    color = tint,
-                    radius = w * 0.08f,
-                    center = Offset(w * 0.36f, h * 0.65f)
-                )
-
-                // خطوط السماعات (يمين) - تتحرك عند التشغيل
-                val barHeights = listOf(0.05f, 0.08f, 0.06f)
-                barHeights.forEachIndexed { i, _ ->
-                    val barHeight by transition.animateFloat(
-                        initialValue = 0.04f,
-                        targetValue = if (isPlaying) (0.10f + i * 0.03f) else 0.04f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(
-                                durationMillis = 400 + i * 150,
-                                easing = LinearEasing
-                            ),
-                            repeatMode = RepeatMode.Reverse
-                        ),
-                        label = "bar$i"
-                    )
-                    val barX = w * 0.55f + i * (w * 0.10f)
-                    val barY = h * 0.68f - h * barHeight
-                    drawRect(
-                        color = tint,
-                        topLeft = Offset(barX, barY),
-                        size = Size(w * 0.06f, h * barHeight * 2)
-                    )
-                }
-            }
+        // الهوائي
+        val antennaPath = Path().apply {
+            moveTo(w * 0.60f, h * 0.30f)
+            lineTo(w * 0.88f, h * 0.10f)
         }
+        drawPath(antennaPath, tint, style = stroke)
+
+        // جسم الراديو (مستطيل مستدير)
+        val bodyLeft = w * 0.18f
+        val bodyTop = h * 0.32f
+        val bodyRight = w * 0.82f
+        val bodyBottom = h * 0.78f
+        drawRoundRect(
+            color = tint,
+            topLeft = Offset(bodyLeft, bodyTop),
+            size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
+            cornerRadius = CornerRadius(10.dp.toPx()),
+            style = stroke
+        )
+
+        // الشاشة الداخلية (مستطيل صغير أعلى)
+        drawRect(
+            color = tint,
+            topLeft = Offset(w * 0.25f, h * 0.40f),
+            size = Size(w * 0.40f, h * 0.12f)
+        )
+
+        // قرص التوليف (دائرة سفلية يسار)
+        drawCircle(
+            color = tint,
+            radius = w * 0.08f,
+            center = Offset(w * 0.36f, h * 0.65f)
+        )
+
+        // خطوط السماعات المتحركة (يمين)
+        val baseY = h * 0.75f
+        val barWidth = w * 0.06f
+        val maxBarHeight = h * 0.20f
+
+        drawRect(
+            color = tint,
+            topLeft = Offset(w * 0.55f, baseY - maxBarHeight * bar1),
+            size = Size(barWidth, maxBarHeight * bar1)
+        )
+        drawRect(
+            color = tint,
+            topLeft = Offset(w * 0.65f, baseY - maxBarHeight * bar2),
+            size = Size(barWidth, maxBarHeight * bar2)
+        )
+        drawRect(
+            color = tint,
+            topLeft = Offset(w * 0.75f, baseY - maxBarHeight * bar3),
+            size = Size(barWidth, maxBarHeight * bar3)
+        )
     }
 }
 
@@ -345,7 +358,7 @@ private fun FocusableControlIcon(
             .size(52.dp)
             .clip(CircleShape)
             .background(
-                if (focused) Color.White.copy(alpha = 0.3f) // ✅ خلفية بيضاء شفافة عند التركيز
+                if (focused) Color.White.copy(alpha = 0.3f)
                 else Color.Transparent
             )
             .onFocusChanged { focused = it.isFocused }
