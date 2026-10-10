@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -40,12 +39,11 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val station = currentStation ?: vm.stations.firstOrNull()
     val index = vm.stations.indexOf(station).coerceAtLeast(0)
 
-    // 🎨 خلفية متدرجة أنيقة
     val backgroundBrush = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFF0A2A28), // أخضر داكن فاتح في الأعلى
-            Color(0xFF051A18), // أخضر داكن في الوسط
-            Color(0xFF030706)  // أسود مخضر في الأسفل
+            Color(0xFF0A2A28),
+            Color(0xFF051A18),
+            Color(0xFF030706)
         )
     )
 
@@ -94,17 +92,14 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(16.dp))
 
-                // ===== الجزء المركزي: الأيقونة مع الحلقات النابضة =====
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    // الحلقات النابضة (Pulse Rings)
                     PulseRings(isPlaying = isPlaying)
 
-                    // الدائرة البيضاء الرئيسية مع أيقونة الراديو
                     Box(
                         modifier = Modifier
                             .size(180.dp)
@@ -126,7 +121,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     }
                 }
 
-                // ===== معلومات الإذاعة =====
                 Text(
                     text = "TRACK ${String.format("%02d", index + 1)}",
                     color = GoldPrimary.copy(alpha = 0.7f),
@@ -151,7 +145,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(20.dp))
 
-                // ===== أزرار التحكم =====
+                // ===== أزرار التحكم (بعد التعديل) =====
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -159,10 +153,13 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // 1. المفضلة
                     ControlIcon(Icons.Default.FavoriteBorder) { }
+
+                    // 2. المعادل
                     ControlIcon(Icons.Default.Equalizer) { }
 
-                    // زر التشغيل/الإيقاف الرئيسي
+                    // 3. تشغيل/إيقاف (كبير)
                     Box(
                         modifier = Modifier
                             .size(72.dp)
@@ -183,20 +180,21 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         }
                     }
 
+                    // 4. السابق (Prev) - ✅ جديد
+                    ControlIcon(Icons.Default.SkipPrevious) { vm.previousStation() }
+
+                    // 5. التالي (Next) - ✅ موجود
                     ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
-                    ControlIcon(Icons.Default.Stop) { vm.playerManager.stop() }
                 }
             }
         }
     }
 }
 
-// 🎨 حلقات نابضة تتحرك مع الصوت
 @Composable
 private fun PulseRings(isPlaying: Boolean) {
     val transition = rememberInfiniteTransition(label = "pulse")
 
-    // 3 حلقات بسرعات مختلفة
     repeat(3) { i ->
         val scale by transition.animateFloat(
             initialValue = 1f,
