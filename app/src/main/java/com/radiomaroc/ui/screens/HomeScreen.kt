@@ -1,5 +1,8 @@
 package com.radiomaroc.ui.screens
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,33 +28,51 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.radiomaroc.ui.components.WeatherWidget
 import com.radiomaroc.ui.theme.*
 import com.radiomaroc.viewmodel.RadioViewModel
+import com.radiomaroc.viewmodel.WeatherViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(vm: RadioViewModel = viewModel()) {
+fun HomeScreen(
+    vm: RadioViewModel = viewModel(),
+    weatherVm: WeatherViewModel = viewModel()
+) {
 
     val currentStation by vm.playerManager.currentStation.collectAsState()
     val isPlaying by vm.playerManager.isPlaying.collectAsState()
+    val weather by weatherVm.weather.collectAsState()
 
-    // ✅ FocusRequester للتركيز على زر التشغيل عند فتح التطبيق
-    val playButtonFocusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+
+    // ✅ طلب صلاحية الموقع
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.values.any { it }) {
+            weatherVm.fetchWeather()
+        }
+    }
 
     LaunchedEffect(Unit) {
         if (currentStation == null && vm.stations.isNotEmpty()) {
             vm.playIndex(0)
         }
-        // ✅ نطلب التركيز على زر التشغيل بعد ظهور الشاشة
-        kotlinx.coroutines.delay(300)
-        try {
-            playButtonFocusRequester.requestFocus()
-        } catch (e: Exception) {
-            // تجاهل أي خطأ
+        if (weatherVm.hasLocationPermission()) {
+            weatherVm.fetchWeather()
+        } else {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
         }
     }
 
@@ -59,13 +80,13 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val index = vm.stations.indexOf(station).coerceAtLeast(0)
 
     val backgroundColor = Color.Black
+    val playButtonFocusRequester = remember { FocusRequester() }
 
     Scaffold(
         containerColor = backgroundColor,
         topBar = {
             TopAppBar(
                 title = {
-                    // ✅ اسم التطبيق بدلاً من اسم القناة
                     Text(
                         text = "Radio FM",
                         color = Color.White,
@@ -73,10 +94,8 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         fontSize = 22.sp,
                     )
                 },
-                // ✅ إزالة زر القائمة (لا يوجد navigationIcon)
                 actions = {
-                    // ✅ أيقونة البحث فقط (تمت إزالة الإعدادات)
-                    IconButton(onClick = { /* بحث مستقبلاً */ }) {
+                    IconButton(onClick = { }) {
                         Icon(Icons.Default.Search, "بحث", tint = Color.White)
                     }
                 },
@@ -93,12 +112,16 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(Modifier.height(16.dp))
+                // ✅ ودجت الطقس في الأعلى
+                WeatherWidget(weather = weather)
 
+                Spacer(Modifier.height(8.dp))
+
+                // منطقة الأيقونة المركزية
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -109,7 +132,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         PulseRings()
                     }
 
-                    // الدائرة الذهبية الفاخرة
                     Box(
                         modifier = Modifier
                             .size(220.dp)
@@ -140,7 +162,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 Text(
                     text = station?.name ?: "",
                     color = Color.White,
-                    fontSize = 28.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
@@ -148,29 +170,29 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 Text(
                     text = station?.category ?: "",
                     color = TextSecondary,
-                    fontSize = 16.sp
+                    fontSize = 15.sp
                 )
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(16.dp))
 
+                // أزرار التحكم
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 24.dp),
+                        .padding(bottom = 20.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FocusableControlIcon(Icons.Default.FavoriteBorder) { }
                     FocusableControlIcon(Icons.Default.Equalizer) { }
 
-                    // ✅ زر التشغيل/الإيقاف مع FocusRequester (التركيز الافتراضي)
                     var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
                             .size(72.dp)
                             .clip(CircleShape)
                             .background(if (playFocused) GoldPrimary else Color.White)
-                            .focusRequester(playButtonFocusRequester) // ✅ التركيز الافتراضي
+                            .focusRequester(playButtonFocusRequester)
                             .onFocusChanged { playFocused = it.isFocused }
                             .focusable(),
                         contentAlignment = Alignment.Center
@@ -196,13 +218,10 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     }
 }
 
-// ✅ أيقونة راديو فاخرة (أسود + ذهبي + أحمر)
+// ✅ أيقونة الراديو الفاخرة
 @Composable
-private fun ClassicRadioIcon(
-    isPlaying: Boolean
-) {
+private fun ClassicRadioIcon(isPlaying: Boolean) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
-
     val heights = listOf(0.4f, 0.75f, 1.0f, 0.75f, 0.4f)
 
     val animatedHeights = heights.mapIndexed { index, baseHeight ->
@@ -231,7 +250,6 @@ private fun ClassicRadioIcon(
         val w = size.width
         val h = size.height
 
-        // الهوائي
         val antennaStart = Offset(w * 0.62f, h * 0.30f)
         val antennaEnd = Offset(w * 0.90f, h * 0.12f)
         drawLine(
@@ -241,13 +259,8 @@ private fun ClassicRadioIcon(
             strokeWidth = 4.dp.toPx(),
             cap = StrokeCap.Round
         )
-        drawCircle(
-            color = goldLight,
-            radius = w * 0.025f,
-            center = antennaEnd
-        )
+        drawCircle(color = goldLight, radius = w * 0.025f, center = antennaEnd)
 
-        // جسم الراديو
         val bodyLeft = w * 0.15f
         val bodyTop = h * 0.32f
         val bodyRight = w * 0.85f
@@ -267,7 +280,6 @@ private fun ClassicRadioIcon(
             style = Stroke(width = 3.dp.toPx())
         )
 
-        // شاشة الترددات
         val screenLeft = w * 0.50f
         val screenTop = h * 0.40f
         val screenRight = w * 0.78f
@@ -306,7 +318,6 @@ private fun ClassicRadioIcon(
             cap = StrokeCap.Round
         )
 
-        // الذبذبات
         val barWidth = w * 0.040f
         val barSpacing = w * 0.022f
         val startX = w * 0.20f
@@ -316,33 +327,17 @@ private fun ClassicRadioIcon(
         animatedHeights.forEachIndexed { index, heightRatio ->
             val barHeight = maxBarHeight * heightRatio
             drawRoundRect(
-                brush = Brush.verticalGradient(
-                    colors = listOf(orangeBright, redBright)
-                ),
-                topLeft = Offset(
-                    startX + index * (barWidth + barSpacing),
-                    baseY - barHeight
-                ),
+                brush = Brush.verticalGradient(colors = listOf(orangeBright, redBright)),
+                topLeft = Offset(startX + index * (barWidth + barSpacing), baseY - barHeight),
                 size = Size(barWidth, barHeight),
                 cornerRadius = CornerRadius(barWidth / 2, barWidth / 2)
             )
         }
 
-        // قرص التوليف
         val knobCenter = Offset(w * 0.70f, h * 0.66f)
         val knobRadius = w * 0.075f
-
-        drawCircle(
-            color = Color(0xFF1A1A1A),
-            radius = knobRadius,
-            center = knobCenter
-        )
-        drawCircle(
-            color = goldDark,
-            radius = knobRadius,
-            center = knobCenter,
-            style = Stroke(width = 2.dp.toPx())
-        )
+        drawCircle(color = Color(0xFF1A1A1A), radius = knobRadius, center = knobCenter)
+        drawCircle(color = goldDark, radius = knobRadius, center = knobCenter, style = Stroke(width = 2.dp.toPx()))
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(goldLight, goldDark),
@@ -360,59 +355,28 @@ private fun PulseRings() {
     val transition = rememberInfiniteTransition(label = "pulse")
 
     val scale1 by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.25f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
+        initialValue = 1f, targetValue = 1.25f,
+        animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "scale1"
     )
     val alpha1 by transition.animateFloat(
-        initialValue = 0.45f,
-        targetValue = 0.15f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
+        initialValue = 0.45f, targetValue = 0.15f,
+        animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "alpha1"
     )
-
     val scale2 by transition.animateFloat(
-        initialValue = 1.15f,
-        targetValue = 1.55f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
+        initialValue = 1.15f, targetValue = 1.55f,
+        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "scale2"
     )
     val alpha2 by transition.animateFloat(
-        initialValue = 0.25f,
-        targetValue = 0.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
+        initialValue = 0.25f, targetValue = 0.05f,
+        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "alpha2"
     )
 
-    Box(
-        modifier = Modifier
-            .size(220.dp)
-            .scale(scale1)
-            .alpha(alpha1)
-            .clip(CircleShape)
-            .background(Color(0xFFF4D078))
-    )
-    Box(
-        modifier = Modifier
-            .size(220.dp)
-            .scale(scale2)
-            .alpha(alpha2)
-            .clip(CircleShape)
-            .background(Color(0xFFF4D078))
-    )
+    Box(modifier = Modifier.size(220.dp).scale(scale1).alpha(alpha1).clip(CircleShape).background(Color(0xFFF4D078)))
+    Box(modifier = Modifier.size(220.dp).scale(scale2).alpha(alpha2).clip(CircleShape).background(Color(0xFFF4D078)))
 }
 
 @Composable
@@ -426,18 +390,12 @@ private fun FocusableControlIcon(
         modifier = Modifier
             .size(52.dp)
             .clip(CircleShape)
-            .background(
-                if (focused) Color.White.copy(alpha = 0.3f)
-                else Color.Transparent
-            )
+            .background(if (focused) Color.White.copy(alpha = 0.3f) else Color.Transparent)
             .onFocusChanged { focused = it.isFocused }
             .focusable(),
         contentAlignment = Alignment.Center
     ) {
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier.size(52.dp)
-        ) {
+        IconButton(onClick = onClick, modifier = Modifier.size(52.dp)) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
