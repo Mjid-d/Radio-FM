@@ -16,8 +16,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,6 +48,14 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
         colors = listOf(
             Color(0xFF0A2A28),
             Color(0xFF051A18),
+            Color(0xFF030706)
+        )
+    )
+
+    // نفس التدرج للأيقونة
+    val iconGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF0A2A28),
             Color(0xFF030706)
         )
     )
@@ -94,14 +105,19 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(16.dp))
 
+                // ===== الجزء المركزي: الأيقونة مع الحلقات النابضة =====
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    PulseRings(isPlaying = isPlaying)
+                    // ✅ الذبذبات فقط عند التشغيل
+                    if (isPlaying) {
+                        PulseRings()
+                    }
 
+                    // الدائرة البيضاء الرئيسية
                     Box(
                         modifier = Modifier
                             .size(180.dp)
@@ -114,12 +130,26 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                             .border(3.dp, GoldPrimary.copy(alpha = 0.3f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Radio,
-                            contentDescription = null,
-                            tint = DarkBackground,
-                            modifier = Modifier.size(100.dp)
-                        )
+                        // ✅ أيقونة الراديو مع التدرج اللوني
+                        Box(
+                            modifier = Modifier
+                                .size(110.dp)
+                                .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                        ) {
+                            // 1. رسم الأيقونة باللون الأبيض
+                            Icon(
+                                imageVector = Icons.Default.Radio,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            // 2. تطبيق التدرج اللوني على الأيقونة
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(iconGradient, blendMode = BlendMode.SrcIn)
+                            )
+                        }
                     }
                 }
 
@@ -147,7 +177,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(20.dp))
 
-                // ===== أزرار التحكم (بدون أي تحريك عند التنقل) =====
+                // ===== أزرار التحكم =====
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,19 +185,15 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 1. المفضلة
                     ControlIcon(Icons.Default.FavoriteBorder) { }
-
-                    // 2. المعادل
                     ControlIcon(Icons.Default.Equalizer) { }
 
-                    // 3. تشغيل/إيقاف (كبير) مع تأثير التركيز
                     var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
-                            .size(72.dp) // ✅ الحجم ثابت لا يتغير
+                            .size(72.dp)
                             .clip(CircleShape)
-                            .background(if (playFocused) GoldPrimary else Color.White) // ✅ اللون فقط هو الذي يتغير
+                            .background(if (playFocused) GoldPrimary else Color.White)
                             .onFocusChanged { playFocused = it.isFocused }
                             .focusable(),
                         contentAlignment = Alignment.Center
@@ -179,16 +205,13 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                             Icon(
                                 imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = DarkBackground, // ✅ لون الأيقونة ثابت
-                                modifier = Modifier.size(40.dp) // ✅ حجم الأيقونة ثابت
+                                tint = DarkBackground,
+                                modifier = Modifier.size(40.dp)
                             )
                         }
                     }
 
-                    // 4. السابق
                     ControlIcon(Icons.Default.SkipPrevious) { vm.previousStation() }
-
-                    // 5. التالي
                     ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
                 }
             }
@@ -196,45 +219,68 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     }
 }
 
+// ✅ ذبذبات ناعمة ومتواصلة (توسع وانقباض مستمر بدون انقطاع)
 @Composable
-private fun PulseRings(isPlaying: Boolean) {
+private fun PulseRings() {
     val transition = rememberInfiniteTransition(label = "pulse")
 
-    repeat(3) { i ->
-        val scale by transition.animateFloat(
-            initialValue = 1f,
-            targetValue = if (isPlaying) 2.2f else 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 2000 + i * 600,
-                    easing = LinearEasing
-                ),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "scale$i"
-        )
-        val alpha by transition.animateFloat(
-            initialValue = 0.6f,
-            targetValue = if (isPlaying) 0f else 0f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 2000 + i * 600,
-                    easing = LinearEasing
-                ),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "alpha$i"
-        )
+    // الحلقة الأولى (الداخلية)
+    val scale1 by transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.25f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale1"
+    )
+    val alpha1 by transition.animateFloat(
+        initialValue = 0.45f,
+        targetValue = 0.15f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha1"
+    )
 
-        Box(
-            modifier = Modifier
-                .size(180.dp)
-                .scale(scale) // ✅ التحريك مسموح هنا فقط للنبض
-                .alpha(alpha)
-                .clip(CircleShape)
-                .background(GoldPrimary.copy(alpha = 0.4f))
-        )
-    }
+    // الحلقة الثانية (الخارجية - أبطأ قليلاً)
+    val scale2 by transition.animateFloat(
+        initialValue = 1.15f,
+        targetValue = 1.55f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale2"
+    )
+    val alpha2 by transition.animateFloat(
+        initialValue = 0.25f,
+        targetValue = 0.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha2"
+    )
+
+    // رسم الحلقتين
+    Box(
+        modifier = Modifier
+            .size(180.dp)
+            .scale(scale1)
+            .alpha(alpha1)
+            .clip(CircleShape)
+            .background(GoldPrimary)
+    )
+    Box(
+        modifier = Modifier
+            .size(180.dp)
+            .scale(scale2)
+            .alpha(alpha2)
+            .clip(CircleShape)
+            .background(GoldPrimary)
+    )
 }
 
 @Composable
@@ -247,15 +293,15 @@ private fun ControlIcon(
     IconButton(
         onClick = onClick,
         modifier = Modifier
-            .size(52.dp) // ✅ الحجم ثابت لا يتغير
+            .size(52.dp)
             .clip(CircleShape)
             .background(
-                if (focused) GoldPrimary.copy(alpha = 0.3f) // ✅ اللون فقط هو الذي يتغير
+                if (focused) GoldPrimary.copy(alpha = 0.3f)
                 else Color.White.copy(alpha = 0.1f)
             )
             .border(
                 1.dp,
-                if (focused) GoldPrimary else Color.White.copy(alpha = 0.2f), // ✅ الحدود فقط تتغير
+                if (focused) GoldPrimary else Color.White.copy(alpha = 0.2f),
                 CircleShape
             )
             .onFocusChanged { focused = it.isFocused }
@@ -264,8 +310,8 @@ private fun ControlIcon(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (focused) GoldPrimary else Color.White, // ✅ لون الأيقونة يتغير
-            modifier = Modifier.size(24.dp) // ✅ حجم الأيقونة ثابت
+            tint = if (focused) GoldPrimary else Color.White,
+            modifier = Modifier.size(24.dp)
         )
     }
 }
