@@ -51,7 +51,6 @@ fun HomeScreen(
 
     val context = LocalContext.current
 
-    // ✅ طلب صلاحية الموقع
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -116,12 +115,10 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // ✅ ودجت الطقس في الأعلى
                 WeatherWidget(weather = weather)
 
                 Spacer(Modifier.height(8.dp))
 
-                // منطقة الأيقونة المركزية
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -175,7 +172,6 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                // أزرار التحكم
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -218,7 +214,6 @@ fun HomeScreen(
     }
 }
 
-// ✅ أيقونة الراديو الفاخرة
 @Composable
 private fun ClassicRadioIcon(isPlaying: Boolean) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
@@ -229,10 +224,7 @@ private fun ClassicRadioIcon(isPlaying: Boolean) {
             initialValue = baseHeight * 0.2f,
             targetValue = if (isPlaying) baseHeight else baseHeight * 0.2f,
             animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 380 + index * 80,
-                    easing = FastOutSlowInEasing
-                ),
+                animation = tween(durationMillis = 380 + index * 80, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse
             ),
             label = "bar$index"
@@ -252,13 +244,7 @@ private fun ClassicRadioIcon(isPlaying: Boolean) {
 
         val antennaStart = Offset(w * 0.62f, h * 0.30f)
         val antennaEnd = Offset(w * 0.90f, h * 0.12f)
-        drawLine(
-            color = radioBlack,
-            start = antennaStart,
-            end = antennaEnd,
-            strokeWidth = 4.dp.toPx(),
-            cap = StrokeCap.Round
-        )
+        drawLine(color = radioBlack, start = antennaStart, end = antennaEnd, strokeWidth = 4.dp.toPx(), cap = StrokeCap.Round)
         drawCircle(color = goldLight, radius = w * 0.025f, center = antennaEnd)
 
         val bodyLeft = w * 0.15f
@@ -266,57 +252,24 @@ private fun ClassicRadioIcon(isPlaying: Boolean) {
         val bodyRight = w * 0.85f
         val bodyBottom = h * 0.82f
 
-        drawRoundRect(
-            color = radioBlack,
-            topLeft = Offset(bodyLeft, bodyTop),
-            size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
-            cornerRadius = CornerRadius(12.dp.toPx())
-        )
-        drawRoundRect(
-            color = goldDark,
-            topLeft = Offset(bodyLeft, bodyTop),
-            size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
-            cornerRadius = CornerRadius(12.dp.toPx()),
-            style = Stroke(width = 3.dp.toPx())
-        )
+        drawRoundRect(color = radioBlack, topLeft = Offset(bodyLeft, bodyTop), size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop), cornerRadius = CornerRadius(12.dp.toPx()))
+        drawRoundRect(color = goldDark, topLeft = Offset(bodyLeft, bodyTop), size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop), cornerRadius = CornerRadius(12.dp.toPx()), style = Stroke(width = 3.dp.toPx()))
 
         val screenLeft = w * 0.50f
         val screenTop = h * 0.40f
         val screenRight = w * 0.78f
         val screenBottom = h * 0.52f
 
-        drawRoundRect(
-            color = Color(0xFF1A1A1A),
-            topLeft = Offset(screenLeft, screenTop),
-            size = Size(screenRight - screenLeft, screenBottom - screenTop),
-            cornerRadius = CornerRadius(3.dp.toPx())
-        )
-        drawRoundRect(
-            color = goldDark,
-            topLeft = Offset(screenLeft, screenTop),
-            size = Size(screenRight - screenLeft, screenBottom - screenTop),
-            cornerRadius = CornerRadius(3.dp.toPx()),
-            style = Stroke(width = 1.5.dp.toPx())
-        )
+        drawRoundRect(color = Color(0xFF1A1A1A), topLeft = Offset(screenLeft, screenTop), size = Size(screenRight - screenLeft, screenBottom - screenTop), cornerRadius = CornerRadius(3.dp.toPx()))
+        drawRoundRect(color = goldDark, topLeft = Offset(screenLeft, screenTop), size = Size(screenRight - screenLeft, screenBottom - screenTop), cornerRadius = CornerRadius(3.dp.toPx()), style = Stroke(width = 1.5.dp.toPx()))
 
         for (i in 1..4) {
             val x = screenLeft + (screenRight - screenLeft) * i / 5f
-            drawLine(
-                color = Color.Gray,
-                start = Offset(x, screenTop + h * 0.02f),
-                end = Offset(x, screenBottom - h * 0.02f),
-                strokeWidth = 1.dp.toPx()
-            )
+            drawLine(color = Color.Gray, start = Offset(x, screenTop + h * 0.02f), end = Offset(x, screenBottom - h * 0.02f), strokeWidth = 1.dp.toPx())
         }
 
         val needleX = screenLeft + (screenRight - screenLeft) * 0.6f
-        drawLine(
-            color = redBright,
-            start = Offset(needleX, screenTop + h * 0.01f),
-            end = Offset(needleX, screenBottom - h * 0.01f),
-            strokeWidth = 2.5.dp.toPx(),
-            cap = StrokeCap.Round
-        )
+        drawLine(color = redBright, start = Offset(needleX, screenTop + h * 0.01f), end = Offset(needleX, screenBottom - h * 0.01f), strokeWidth = 2.5.dp.toPx(), cap = StrokeCap.Round)
 
         val barWidth = w * 0.040f
         val barSpacing = w * 0.022f
@@ -326,27 +279,14 @@ private fun ClassicRadioIcon(isPlaying: Boolean) {
 
         animatedHeights.forEachIndexed { index, heightRatio ->
             val barHeight = maxBarHeight * heightRatio
-            drawRoundRect(
-                brush = Brush.verticalGradient(colors = listOf(orangeBright, redBright)),
-                topLeft = Offset(startX + index * (barWidth + barSpacing), baseY - barHeight),
-                size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(barWidth / 2, barWidth / 2)
-            )
+            drawRoundRect(brush = Brush.verticalGradient(colors = listOf(orangeBright, redBright)), topLeft = Offset(startX + index * (barWidth + barSpacing), baseY - barHeight), size = Size(barWidth, barHeight), cornerRadius = CornerRadius(barWidth / 2, barWidth / 2))
         }
 
         val knobCenter = Offset(w * 0.70f, h * 0.66f)
         val knobRadius = w * 0.075f
         drawCircle(color = Color(0xFF1A1A1A), radius = knobRadius, center = knobCenter)
         drawCircle(color = goldDark, radius = knobRadius, center = knobCenter, style = Stroke(width = 2.dp.toPx()))
-        drawCircle(
-            brush = Brush.radialGradient(
-                colors = listOf(goldLight, goldDark),
-                center = Offset(knobCenter.x - knobRadius * 0.3f, knobCenter.y - knobRadius * 0.3f),
-                radius = knobRadius
-            ),
-            radius = knobRadius * 0.65f,
-            center = knobCenter
-        )
+        drawCircle(brush = Brush.radialGradient(colors = listOf(goldLight, goldDark), center = Offset(knobCenter.x - knobRadius * 0.3f, knobCenter.y - knobRadius * 0.3f), radius = knobRadius), radius = knobRadius * 0.65f, center = knobCenter)
     }
 }
 
@@ -354,26 +294,10 @@ private fun ClassicRadioIcon(isPlaying: Boolean) {
 private fun PulseRings() {
     val transition = rememberInfiniteTransition(label = "pulse")
 
-    val scale1 by transition.animateFloat(
-        initialValue = 1f, targetValue = 1.25f,
-        animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "scale1"
-    )
-    val alpha1 by transition.animateFloat(
-        initialValue = 0.45f, targetValue = 0.15f,
-        animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "alpha1"
-    )
-    val scale2 by transition.animateFloat(
-        initialValue = 1.15f, targetValue = 1.55f,
-        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "scale2"
-    )
-    val alpha2 by transition.animateFloat(
-        initialValue = 0.25f, targetValue = 0.05f,
-        animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "alpha2"
-    )
+    val scale1 by transition.animateFloat(initialValue = 1f, targetValue = 1.25f, animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "scale1")
+    val alpha1 by transition.animateFloat(initialValue = 0.45f, targetValue = 0.15f, animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "alpha1")
+    val scale2 by transition.animateFloat(initialValue = 1.15f, targetValue = 1.55f, animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "scale2")
+    val alpha2 by transition.animateFloat(initialValue = 0.25f, targetValue = 0.05f, animationSpec = infiniteRepeatable(tween(2200, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "alpha2")
 
     Box(modifier = Modifier.size(220.dp).scale(scale1).alpha(alpha1).clip(CircleShape).background(Color(0xFFF4D078)))
     Box(modifier = Modifier.size(220.dp).scale(scale2).alpha(alpha2).clip(CircleShape).background(Color(0xFFF4D078)))
