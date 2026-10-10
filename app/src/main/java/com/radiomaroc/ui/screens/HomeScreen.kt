@@ -185,7 +185,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     }
 }
 
-// ✅ أيقونة راديو كلاسيكية (بدون تعقيدات)
+// ✅ أيقونة راديو كلاسيكية مع معادل صوتي احترافي (5 أشرطة)
 @Composable
 private fun ClassicRadioIcon(
     isPlaying: Boolean,
@@ -193,48 +193,39 @@ private fun ClassicRadioIcon(
 ) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
 
-    // ✅ نقرأ قيم الأنيميشن خارج الـ Canvas
-    val bar1 by transition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = if (isPlaying) 1.0f else 0.3f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(400, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "bar1"
-    )
-    val bar2 by transition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = if (isPlaying) 1.0f else 0.3f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(550, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "bar2"
-    )
-    val bar3 by transition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = if (isPlaying) 1.0f else 0.3f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(700, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "bar3"
-    )
+    // 5 أشرطة بأطوال مختلفة لتبدو مثل الموجات الصوتية
+    val heights = listOf(0.4f, 0.7f, 1.0f, 0.7f, 0.4f)
+    
+    // قراءة قيم الأنيميشن لجميع الأشرطة
+    val animatedHeights = heights.mapIndexed { index, baseHeight ->
+        val height by transition.animateFloat(
+            initialValue = baseHeight * 0.5f,
+            targetValue = if (isPlaying) baseHeight else baseHeight * 0.5f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 400 + index * 100,
+                    easing = FastOutSlowInEasing
+                ),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "bar$index"
+        )
+        height
+    }
 
     Canvas(modifier = Modifier.size(120.dp)) {
         val w = size.width
         val h = size.height
         val stroke = Stroke(width = 4.dp.toPx())
 
-        // الهوائي
+        // 1. الهوائي
         val antennaPath = Path().apply {
             moveTo(w * 0.60f, h * 0.30f)
             lineTo(w * 0.88f, h * 0.10f)
         }
         drawPath(antennaPath, tint, style = stroke)
 
-        // جسم الراديو (مستطيل مستدير)
+        // 2. جسم الراديو (مستطيل مستدير)
         val bodyLeft = w * 0.18f
         val bodyTop = h * 0.32f
         val bodyRight = w * 0.82f
@@ -247,40 +238,39 @@ private fun ClassicRadioIcon(
             style = stroke
         )
 
-        // الشاشة الداخلية (مستطيل صغير أعلى)
+        // 3. الشاشة الداخلية (مستطيل صغير أعلى)
         drawRect(
             color = tint,
             topLeft = Offset(w * 0.25f, h * 0.40f),
             size = Size(w * 0.40f, h * 0.12f)
         )
 
-        // قرص التوليف (دائرة سفلية يسار)
+        // 4. قرص التوليف (دائرة سفلية يسار)
         drawCircle(
             color = tint,
             radius = w * 0.08f,
             center = Offset(w * 0.36f, h * 0.65f)
         )
 
-        // خطوط السماعات المتحركة (يمين)
+        // 5. المعادل الصوتي (5 أشرطة متساوية)
+        val barWidth = w * 0.04f
+        val barSpacing = w * 0.03f
+        val startX = w * 0.55f
         val baseY = h * 0.75f
-        val barWidth = w * 0.06f
-        val maxBarHeight = h * 0.20f
+        val maxBarHeight = h * 0.22f
 
-        drawRect(
-            color = tint,
-            topLeft = Offset(w * 0.55f, baseY - maxBarHeight * bar1),
-            size = Size(barWidth, maxBarHeight * bar1)
-        )
-        drawRect(
-            color = tint,
-            topLeft = Offset(w * 0.65f, baseY - maxBarHeight * bar2),
-            size = Size(barWidth, maxBarHeight * bar2)
-        )
-        drawRect(
-            color = tint,
-            topLeft = Offset(w * 0.75f, baseY - maxBarHeight * bar3),
-            size = Size(barWidth, maxBarHeight * bar3)
-        )
+        animatedHeights.forEachIndexed { index, heightRatio ->
+            val barHeight = maxBarHeight * heightRatio
+            drawRoundRect(
+                color = tint,
+                topLeft = Offset(
+                    startX + index * (barWidth + barSpacing),
+                    baseY - barHeight
+                ),
+                size = Size(barWidth, barHeight),
+                cornerRadius = CornerRadius(barWidth / 2, barWidth / 2) // حواف دائرية
+            )
+        }
     }
 }
 
