@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,10 +21,19 @@ import com.radiomaroc.ui.theme.*
 
 @Composable
 fun SplashScreen() {
+    // ✅ نفس التدرج اللوني الموجود في القائمة الرئيسية
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF0A2A28),
+            Color(0xFF051A18),
+            Color(0xFF030706)
+        )
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground),
+            .background(backgroundBrush), // ✅ التدرج بدلاً من اللون الثابت
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -38,7 +49,7 @@ fun SplashScreen() {
                 text = "radio FM",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
-                color = GoldPrimary // لون أبيض
+                color = GoldPrimary
             )
             Spacer(Modifier.height(8.dp))
             Text(
