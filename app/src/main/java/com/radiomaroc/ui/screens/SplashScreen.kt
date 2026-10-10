@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color // ✅ هذا هو السطر المفقود
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,12 +23,12 @@ fun SplashScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black), // ✅ خلفية سوداء
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground), // ✅ الأيقونة الجديدة
+                painter = painterResource(id = R.drawable.radiofm), // ✅ اسم صورتك
                 contentDescription = null,
                 modifier = Modifier
                     .size(150.dp)
@@ -39,7 +39,7 @@ fun SplashScreen() {
                 text = "radio FM",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
-                color = GoldPrimary
+                color = Color.White
             )
             Spacer(Modifier.height(8.dp))
             Text(
