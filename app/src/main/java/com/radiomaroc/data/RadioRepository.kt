@@ -112,7 +112,7 @@ object RadioRepository {
             name = "إدريس أبكر",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/idrees_abkr",
+            streamUrl = "https://backup.qurango.net/radio/idrees_abkr/",
             logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
        ),
         RadioStation(
@@ -120,7 +120,7 @@ object RadioRepository {
             name = "سعد الغامدي",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/saad_alghamdi",
+            streamUrl = "https://backup.qurango.net/radio/saad_alghamdi/",
             logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
        ),
         RadioStation(
@@ -128,7 +128,7 @@ object RadioRepository {
             name = "سعود الشريم",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/saud_alshuraim",
+            streamUrl = "https://backup.qurango.net/radio/saud_alshuraim/",
             logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
        ),
         
