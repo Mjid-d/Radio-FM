@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,19 +20,10 @@ import com.radiomaroc.ui.theme.*
 
 @Composable
 fun SplashScreen() {
-    // ✅ نفس التدرج اللوني الموجود في القائمة الرئيسية
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF0A2A28),
-            Color(0xFF051A18),
-            Color(0xFF030706)
-        )
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundBrush), // ✅ التدرج بدلاً من اللون الثابت
+            .background(Color.Black), // ✅ خلفية سوداء كاملة
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
