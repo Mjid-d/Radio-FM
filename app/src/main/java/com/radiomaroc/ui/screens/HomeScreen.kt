@@ -1,5 +1,6 @@
 package com.radiomaroc.ui.screens
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -11,7 +12,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,8 +40,17 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val station = currentStation ?: vm.stations.firstOrNull()
     val index = vm.stations.indexOf(station).coerceAtLeast(0)
 
+    // 🎨 خلفية متدرجة أنيقة
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF0A2A28), // أخضر داكن فاتح في الأعلى
+            Color(0xFF051A18), // أخضر داكن في الوسط
+            Color(0xFF030706)  // أسود مخضر في الأسفل
+        )
+    )
+
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = {
@@ -62,123 +75,162 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         Icon(Icons.Default.Settings, "إعدادات", tint = Color.White)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkBackground)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(backgroundBrush)
                 .padding(padding)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // الغلاف
+
+                Spacer(Modifier.height(16.dp))
+
+                // ===== الجزء المركزي: الأيقونة مع الحلقات النابضة =====
                 Box(
                     modifier = Modifier
-                        .weight(0.4f)
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.White),
+                        .weight(1f)
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // الحلقات النابضة (Pulse Rings)
+                    PulseRings(isPlaying = isPlaying)
+
+                    // الدائرة البيضاء الرئيسية مع أيقونة الراديو
+                    Box(
+                        modifier = Modifier
+                            .size(180.dp)
+                            .clip(CircleShape)
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(Color.White, Color(0xFFE8F0EE))
+                                )
+                            )
+                            .border(3.dp, GoldPrimary.copy(alpha = 0.3f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Radio,
                             contentDescription = null,
                             tint = DarkBackground,
-                            modifier = Modifier.size(80.dp)
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = String.format("%02d", index + 1),
-                            color = DarkBackground,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Track ${String.format("%02d", index + 1)}",
-                            color = DarkBackground,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
+                            modifier = Modifier.size(100.dp)
                         )
                     }
                 }
 
-                Spacer(Modifier.width(24.dp))
+                // ===== معلومات الإذاعة =====
+                Text(
+                    text = "TRACK ${String.format("%02d", index + 1)}",
+                    color = GoldPrimary.copy(alpha = 0.7f),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 4.sp
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = station?.name ?: "",
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = station?.category ?: "",
+                    color = TextSecondary,
+                    fontSize = 16.sp
+                )
 
-                // معلومات الإذاعة (بدلاً من التأثير الصوتي)
-                Column(
-                    modifier = Modifier.weight(0.6f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Radio,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(64.dp)
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        text = station?.name ?: "",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = station?.category ?: "",
-                        color = TextSecondary,
-                        fontSize = 16.sp
-                    )
-                }
-            }
+                Spacer(Modifier.height(20.dp))
 
-            Spacer(Modifier.height(24.dp))
-
-            // أزرار التحكم
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ControlIcon(Icons.Default.FavoriteBorder) { }
-                ControlIcon(Icons.Default.Equalizer) { }
-
-                // زر التشغيل/الإيقاف
-                Box(
+                // ===== أزرار التحكم =====
+                Row(
                     modifier = Modifier
-                        .size(72.dp)
-                        .clip(CircleShape)
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
-                        onClick = { vm.playerManager.togglePlayPause() },
-                        modifier = Modifier.size(72.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = null,
-                            tint = DarkBackground,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                }
+                    ControlIcon(Icons.Default.FavoriteBorder) { }
+                    ControlIcon(Icons.Default.Equalizer) { }
 
-                ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
-                ControlIcon(Icons.Default.Stop) { vm.playerManager.stop() }
+                    // زر التشغيل/الإيقاف الرئيسي
+                    Box(
+                        modifier = Modifier
+                            .size(72.dp)
+                            .clip(CircleShape)
+                            .background(Color.White),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(
+                            onClick = { vm.playerManager.togglePlayPause() },
+                            modifier = Modifier.size(72.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                contentDescription = null,
+                                tint = DarkBackground,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    }
+
+                    ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
+                    ControlIcon(Icons.Default.Stop) { vm.playerManager.stop() }
+                }
             }
         }
+    }
+}
+
+// 🎨 حلقات نابضة تتحرك مع الصوت
+@Composable
+private fun PulseRings(isPlaying: Boolean) {
+    val transition = rememberInfiniteTransition(label = "pulse")
+
+    // 3 حلقات بسرعات مختلفة
+    repeat(3) { i ->
+        val scale by transition.animateFloat(
+            initialValue = 1f,
+            targetValue = if (isPlaying) 2.2f else 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 2000 + i * 600,
+                    easing = LinearEasing
+                ),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "scale$i"
+        )
+        val alpha by transition.animateFloat(
+            initialValue = 0.6f,
+            targetValue = if (isPlaying) 0f else 0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 2000 + i * 600,
+                    easing = LinearEasing
+                ),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "alpha$i"
+        )
+
+        Box(
+            modifier = Modifier
+                .size(180.dp)
+                .scale(scale)
+                .alpha(alpha)
+                .clip(CircleShape)
+                .background(GoldPrimary.copy(alpha = 0.4f))
+        )
     }
 }
 
@@ -192,8 +244,8 @@ private fun ControlIcon(
         modifier = Modifier
             .size(52.dp)
             .clip(CircleShape)
-            .background(Color.White.copy(alpha = 0.12f))
-            .border(1.dp, Color.White.copy(alpha = 0.25f), CircleShape)
+            .background(Color.White.copy(alpha = 0.1f))
+            .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
     ) {
         Icon(
             imageVector = icon,
