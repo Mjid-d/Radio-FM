@@ -19,8 +19,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -92,7 +92,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(16.dp))
 
-                // ===== الجزء المركزي: الأيقونة الكلاسيكية =====
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -103,17 +102,24 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         PulseRings()
                     }
 
-                    // الدائرة البيضاء الرئيسية
+                    // ✅ الدائرة الذهبية الفاخرة (بدلاً من البيضاء)
                     Box(
                         modifier = Modifier
-                            .size(200.dp)
+                            .size(220.dp)
                             .clip(CircleShape)
-                            .background(Color.White),
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        Color(0xFFF4D078), // ذهبي فاتح في المنتصف
+                                        Color(0xFFD4AF37), // ذهبي كلاسيكي
+                                        Color(0xFF8B6914)  // ذهبي داكن عند الحواف
+                                    )
+                                )
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         ClassicRadioIcon(
-                            isPlaying = isPlaying,
-                            tint = backgroundColor
+                            isPlaying = isPlaying
                         )
                     }
                 }
@@ -142,7 +148,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(20.dp))
 
-                // ===== أزرار التحكم =====
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -153,7 +158,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     FocusableControlIcon(Icons.Default.FavoriteBorder) { }
                     FocusableControlIcon(Icons.Default.Equalizer) { }
 
-                    // زر التشغيل/الإيقاف (كبير)
                     var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
@@ -185,23 +189,23 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     }
 }
 
-// ✅ أيقونة راديو كلاسيكية مع معادل صوتي احترافي (5 أشرطة)
+// ✅ أيقونة راديو فاخرة (أسود + ذهبي + أحمر)
 @Composable
 private fun ClassicRadioIcon(
-    isPlaying: Boolean,
-    tint: Color
+    isPlaying: Boolean
 ) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
 
-    val heights = listOf(0.4f, 0.7f, 1.0f, 0.7f, 0.4f)
-    
+    // 5 أشرطة بأطوال مختلفة (شكل الموجات)
+    val heights = listOf(0.4f, 0.75f, 1.0f, 0.75f, 0.4f)
+
     val animatedHeights = heights.mapIndexed { index, baseHeight ->
         val height by transition.animateFloat(
-            initialValue = baseHeight * 0.5f,
-            targetValue = if (isPlaying) baseHeight else baseHeight * 0.5f,
+            initialValue = baseHeight * 0.2f,
+            targetValue = if (isPlaying) baseHeight else baseHeight * 0.2f,
             animationSpec = infiniteRepeatable(
                 animation = tween(
-                    durationMillis = 400 + index * 100,
+                    durationMillis = 380 + index * 80,
                     easing = FastOutSlowInEasing
                 ),
                 repeatMode = RepeatMode.Reverse
@@ -211,56 +215,111 @@ private fun ClassicRadioIcon(
         height
     }
 
-    Canvas(modifier = Modifier.size(120.dp)) {
+    // الألوان
+    val radioBlack = Color(0xFF0A0A0A)
+    val goldLight = Color(0xFFF4D078)
+    val goldDark = Color(0xFF8B6914)
+    val redBright = Color(0xFFFF3B30)
+    val orangeBright = Color(0xFFFF9500)
+
+    Canvas(modifier = Modifier.size(180.dp)) {
         val w = size.width
         val h = size.height
         val stroke = Stroke(width = 4.dp.toPx())
 
-        // 1. الهوائي
-        val antennaPath = Path().apply {
-            moveTo(w * 0.60f, h * 0.30f)
-            lineTo(w * 0.88f, h * 0.10f)
-        }
-        drawPath(antennaPath, tint, style = stroke)
+        // ===== 1. الهوائي =====
+        val antennaStart = Offset(w * 0.62f, h * 0.30f)
+        val antennaEnd = Offset(w * 0.90f, h * 0.12f)
+        drawLine(
+            color = radioBlack,
+            start = antennaStart,
+            end = antennaEnd,
+            strokeWidth = 4.dp.toPx(),
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
+        )
+        // كرة صغيرة في نهاية الهوائي
+        drawCircle(
+            color = goldLight,
+            radius = w * 0.025f,
+            center = antennaEnd
+        )
 
-        // 2. جسم الراديو
-        val bodyLeft = w * 0.18f
+        // ===== 2. جسم الراديو (مستطيل أسود بإطار ذهبي) =====
+        val bodyLeft = w * 0.15f
         val bodyTop = h * 0.32f
-        val bodyRight = w * 0.82f
-        val bodyBottom = h * 0.78f
+        val bodyRight = w * 0.85f
+        val bodyBottom = h * 0.82f
+
+        // خلفية الراديو (أسود)
         drawRoundRect(
-            color = tint,
+            color = radioBlack,
             topLeft = Offset(bodyLeft, bodyTop),
             size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
-            cornerRadius = CornerRadius(10.dp.toPx()),
-            style = stroke
+            cornerRadius = CornerRadius(12.dp.toPx())
+        )
+        // الإطار الذهبي
+        drawRoundRect(
+            color = goldDark,
+            topLeft = Offset(bodyLeft, bodyTop),
+            size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
+            cornerRadius = CornerRadius(12.dp.toPx()),
+            style = Stroke(width = 3.dp.toPx())
         )
 
-        // 3. الشاشة الداخلية
-        drawRect(
-            color = tint,
-            topLeft = Offset(w * 0.25f, h * 0.40f),
-            size = Size(w * 0.40f, h * 0.12f)
+        // ===== 3. شاشة الترددات (يمين أعلى) =====
+        val screenLeft = w * 0.50f
+        val screenTop = h * 0.40f
+        val screenRight = w * 0.78f
+        val screenBottom = h * 0.52f
+
+        drawRoundRect(
+            color = Color(0xFF1A1A1A),
+            topLeft = Offset(screenLeft, screenTop),
+            size = Size(screenRight - screenLeft, screenBottom - screenTop),
+            cornerRadius = CornerRadius(3.dp.toPx())
+        )
+        drawRoundRect(
+            color = goldDark,
+            topLeft = Offset(screenLeft, screenTop),
+            size = Size(screenRight - screenLeft, screenBottom - screenTop),
+            cornerRadius = CornerRadius(3.dp.toPx()),
+            style = Stroke(width = 1.5.dp.toPx())
         )
 
-        // 4. قرص التوليف
-        drawCircle(
-            color = tint,
-            radius = w * 0.08f,
-            center = Offset(w * 0.36f, h * 0.65f)
+        // خطوط التردد الرمادية
+        for (i in 1..4) {
+            val x = screenLeft + (screenRight - screenLeft) * i / 5f
+            drawLine(
+                color = Color.Gray,
+                start = Offset(x, screenTop + h * 0.02f),
+                end = Offset(x, screenBottom - h * 0.02f),
+                strokeWidth = 1.dp.toPx()
+            )
+        }
+
+        // المؤشر الأحمر (مؤشر المحطة)
+        val needleX = screenLeft + (screenRight - screenLeft) * 0.6f
+        drawLine(
+            color = redBright,
+            start = Offset(needleX, screenTop + h * 0.01f),
+            end = Offset(needleX, screenBottom - h * 0.01f),
+            strokeWidth = 2.5.dp.toPx(),
+            cap = androidx.compose.ui.graphics.StrokeCap.Round
         )
 
-        // 5. المعادل الصوتي (5 أشرطة)
-        val barWidth = w * 0.04f
-        val barSpacing = w * 0.03f
-        val startX = w * 0.55f
-        val baseY = h * 0.75f
+        // ===== 4. الذبذبات (أشرطة حمراء-برتقالية) - على يسار الراديو =====
+        val barWidth = w * 0.040f
+        val barSpacing = w * 0.022f
+        val startX = w * 0.20f
+        val baseY = h * 0.72f
         val maxBarHeight = h * 0.22f
 
         animatedHeights.forEachIndexed { index, heightRatio ->
             val barHeight = maxBarHeight * heightRatio
             drawRoundRect(
-                color = tint,
+                brush = Brush.verticalGradient(
+                    colors = listOf(orangeBright, redBright)
+                ),
                 topLeft = Offset(
                     startX + index * (barWidth + barSpacing),
                     baseY - barHeight
@@ -269,6 +328,34 @@ private fun ClassicRadioIcon(
                 cornerRadius = CornerRadius(barWidth / 2, barWidth / 2)
             )
         }
+
+        // ===== 5. قرص التوليف (دائرة ذهبية يمين أسفل) =====
+        val knobCenter = Offset(w * 0.70f, h * 0.66f)
+        val knobRadius = w * 0.075f
+
+        // خلفية القرص (أسود)
+        drawCircle(
+            color = Color(0xFF1A1A1A),
+            radius = knobRadius,
+            center = knobCenter
+        )
+        // حلقة ذهبية
+        drawCircle(
+            color = goldDark,
+            radius = knobRadius,
+            center = knobCenter,
+            style = Stroke(width = 2.dp.toPx())
+        )
+        // قرص ذهبي لامع
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(goldLight, goldDark),
+                center = Offset(knobCenter.x - knobRadius * 0.3f, knobCenter.y - knobRadius * 0.3f),
+                radius = knobRadius
+            ),
+            radius = knobRadius * 0.65f,
+            center = knobCenter
+        )
     }
 }
 
@@ -317,23 +404,23 @@ private fun PulseRings() {
 
     Box(
         modifier = Modifier
-            .size(200.dp)
+            .size(220.dp)
             .scale(scale1)
             .alpha(alpha1)
             .clip(CircleShape)
-            .background(Color.White)
+            .background(Color(0xFFF4D078))
     )
     Box(
         modifier = Modifier
-            .size(200.dp)
+            .size(220.dp)
             .scale(scale2)
             .alpha(alpha2)
             .clip(CircleShape)
-            .background(Color.White)
+            .background(Color(0xFFF4D078))
     )
 }
 
-// ✅ زر مع تأثير التركيز الأبيض الداخلي
+// ✅ زر مع تأثير التركيز
 @Composable
 private fun FocusableControlIcon(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
