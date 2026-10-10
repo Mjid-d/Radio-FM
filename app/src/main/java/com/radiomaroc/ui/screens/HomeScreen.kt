@@ -193,10 +193,8 @@ private fun ClassicRadioIcon(
 ) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
 
-    // 5 أشرطة بأطوال مختلفة لتبدو مثل الموجات الصوتية
     val heights = listOf(0.4f, 0.7f, 1.0f, 0.7f, 0.4f)
     
-    // قراءة قيم الأنيميشن لجميع الأشرطة
     val animatedHeights = heights.mapIndexed { index, baseHeight ->
         val height by transition.animateFloat(
             initialValue = baseHeight * 0.5f,
@@ -225,7 +223,7 @@ private fun ClassicRadioIcon(
         }
         drawPath(antennaPath, tint, style = stroke)
 
-        // 2. جسم الراديو (مستطيل مستدير)
+        // 2. جسم الراديو
         val bodyLeft = w * 0.18f
         val bodyTop = h * 0.32f
         val bodyRight = w * 0.82f
@@ -238,21 +236,21 @@ private fun ClassicRadioIcon(
             style = stroke
         )
 
-        // 3. الشاشة الداخلية (مستطيل صغير أعلى)
+        // 3. الشاشة الداخلية
         drawRect(
             color = tint,
             topLeft = Offset(w * 0.25f, h * 0.40f),
             size = Size(w * 0.40f, h * 0.12f)
         )
 
-        // 4. قرص التوليف (دائرة سفلية يسار)
+        // 4. قرص التوليف
         drawCircle(
             color = tint,
             radius = w * 0.08f,
             center = Offset(w * 0.36f, h * 0.65f)
         )
 
-        // 5. المعادل الصوتي (5 أشرطة متساوية)
+        // 5. المعادل الصوتي (5 أشرطة)
         val barWidth = w * 0.04f
         val barSpacing = w * 0.03f
         val startX = w * 0.55f
@@ -268,13 +266,13 @@ private fun ClassicRadioIcon(
                     baseY - barHeight
                 ),
                 size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(barWidth / 2, barWidth / 2) // حواف دائرية
+                cornerRadius = CornerRadius(barWidth / 2, barWidth / 2)
             )
         }
     }
 }
 
-// ✅ ذبذبات ناعمة ومتواصلة
+// ✅ ذبذبات ناعمة
 @Composable
 private fun PulseRings() {
     val transition = rememberInfiniteTransition(label = "pulse")
