@@ -29,15 +29,15 @@ object RadioRepository {
         ),
         RadioStation(
             id = "plus",
-            name = "Radio plus casablanca",
-            city = "المغرب",
+            name = "Radio Plus Casablanca",
+            city = "الدار البيضاء",
             category = "Sports Live",
             streamUrl = "https://hosting.studioradiomedia.fr:3040/stream",
             logoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqrgJ3J0gBi2EPF7p7VBHpyPpOA0wp2uo-JbQJtqHv1A&s=10"
         ),
         RadioStation(
             id = "med",
-            name = "Med radio",
+            name = "Med Radio",
             city = "المغرب",
             category = "Music Live",
             streamUrl = "https://medradio.ice.infomaniak.ch/medradio-128.mp3",
@@ -69,7 +69,7 @@ object RadioRepository {
         ),
         RadioStation(
             id = "quran",
-            name = "القرآن الكريم",
+            name = "القرآن الكريم - أبو بكر الشاطري",
             city = "المغرب",
             category = "Quran 24/7",
             streamUrl = "https://backup.qurango.net/radio/shaik_abu_bakr_al_shatri",
@@ -77,18 +77,18 @@ object RadioRepository {
         ),
         RadioStation(
             id = "fatwa1",
-            name = "الفتاوى",
+            name = "الفتاوى العامة",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/fatwa/",
+            streamUrl = "https://backup.qurango.net/radio/fatwa",
             logoUrl = "https://fatwa-qa.com/qa-theme/Legacy/images/favicons/apple-touch-icon.png"
         ),
         RadioStation(
             id = "fatwa2",
-            name = "الفتاوى",
+            name = "الفتاوى - ابن باز",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/alaikhtiarat_alfiqhayh_bin_baz/",
+            streamUrl = "https://backup.qurango.net/radio/alaikhtiarat_alfiqhayh_bin_baz",
             logoUrl = "https://m.media-amazon.com/images/I/71XZ85qFWyL.png"
         ),
         RadioStation(
@@ -96,42 +96,17 @@ object RadioRepository {
             name = "السيرة والقصص",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://radio.garden/api/ara/content/listen/GQxvGBNK/channel.mp3?hl=fr&1788448157457",
+            streamUrl = "https://backup.qurango.net/radio/seerah_alsahaba",
             logoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7dy-UF1K0R-DdRtBifULl0c4HRZsd45YLbGlZ43cfUrJ96Jasf46rgySt&s=10"
         ),
         RadioStation(
             id = "shuraim",
-            name = "القرآن شريم",
+            name = "القرآن الكريم - سعود الشريم",
             city = "المغرب",
             category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/saud_alshuraim/",
+            streamUrl = "https://backup.qurango.net/radio/saud_alshuraim",
             logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
-       ),
-        RadioStation(
-            id = "shuraim",
-            name = "إدريس أبكر",
-            city = "المغرب",
-            category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/idrees_abkr/",
-            logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
-       ),
-        RadioStation(
-            id = "shuraim",
-            name = "سعد الغامدي",
-            city = "المغرب",
-            category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/saad_alghamdi/",
-            logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
-       ),
-        RadioStation(
-            id = "shuraim",
-            name = "سعود الشريم",
-            city = "المغرب",
-            category = "Quran 24/7",
-            streamUrl = "https://backup.qurango.net/radio/saud_alshuraim/",
-            logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
-       ),
-        
+        ),
     )
 
     val cities: List<String> = listOf("الكل") + moroccanStations.map { it.city }.distinct()
