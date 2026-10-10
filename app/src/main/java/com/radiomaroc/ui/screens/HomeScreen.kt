@@ -15,12 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,9 +39,19 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val currentStation by vm.playerManager.currentStation.collectAsState()
     val isPlaying by vm.playerManager.isPlaying.collectAsState()
 
+    // ✅ FocusRequester للتركيز على زر التشغيل عند فتح التطبيق
+    val playButtonFocusRequester = remember { FocusRequester() }
+
     LaunchedEffect(Unit) {
         if (currentStation == null && vm.stations.isNotEmpty()) {
             vm.playIndex(0)
+        }
+        // ✅ نطلب التركيز على زر التشغيل بعد ظهور الشاشة
+        kotlinx.coroutines.delay(300)
+        try {
+            playButtonFocusRequester.requestFocus()
+        } catch (e: Exception) {
+            // تجاهل أي خطأ
         }
     }
 
@@ -52,25 +65,19 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
         topBar = {
             TopAppBar(
                 title = {
+                    // ✅ اسم التطبيق بدلاً من اسم القناة
                     Text(
-                        text = station?.name ?: "radio FM",
+                        text = "Radio FM",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        maxLines = 1
+                        fontSize = 22.sp,
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.Menu, "القائمة", tint = Color.White)
-                    }
-                },
+                // ✅ إزالة زر القائمة (لا يوجد navigationIcon)
                 actions = {
-                    IconButton(onClick = { }) {
+                    // ✅ أيقونة البحث فقط (تمت إزالة الإعدادات)
+                    IconButton(onClick = { /* بحث مستقبلاً */ }) {
                         Icon(Icons.Default.Search, "بحث", tint = Color.White)
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.Settings, "إعدادات", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
@@ -102,7 +109,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         PulseRings()
                     }
 
-                    // ✅ الدائرة الذهبية الفاخرة (بدلاً من البيضاء)
+                    // الدائرة الذهبية الفاخرة
                     Box(
                         modifier = Modifier
                             .size(220.dp)
@@ -110,17 +117,15 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                             .background(
                                 Brush.radialGradient(
                                     colors = listOf(
-                                        Color(0xFFF4D078), // ذهبي فاتح في المنتصف
-                                        Color(0xFFD4AF37), // ذهبي كلاسيكي
-                                        Color(0xFF8B6914)  // ذهبي داكن عند الحواف
+                                        Color(0xFFF4D078),
+                                        Color(0xFFD4AF37),
+                                        Color(0xFF8B6914)
                                     )
                                 )
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        ClassicRadioIcon(
-                            isPlaying = isPlaying
-                        )
+                        ClassicRadioIcon(isPlaying = isPlaying)
                     }
                 }
 
@@ -158,12 +163,14 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     FocusableControlIcon(Icons.Default.FavoriteBorder) { }
                     FocusableControlIcon(Icons.Default.Equalizer) { }
 
+                    // ✅ زر التشغيل/الإيقاف مع FocusRequester (التركيز الافتراضي)
                     var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
                             .size(72.dp)
                             .clip(CircleShape)
                             .background(if (playFocused) GoldPrimary else Color.White)
+                            .focusRequester(playButtonFocusRequester) // ✅ التركيز الافتراضي
                             .onFocusChanged { playFocused = it.isFocused }
                             .focusable(),
                         contentAlignment = Alignment.Center
@@ -196,7 +203,6 @@ private fun ClassicRadioIcon(
 ) {
     val transition = rememberInfiniteTransition(label = "radio_wave")
 
-    // 5 أشرطة بأطوال مختلفة (شكل الموجات)
     val heights = listOf(0.4f, 0.75f, 1.0f, 0.75f, 0.4f)
 
     val animatedHeights = heights.mapIndexed { index, baseHeight ->
@@ -215,7 +221,6 @@ private fun ClassicRadioIcon(
         height
     }
 
-    // الألوان
     val radioBlack = Color(0xFF0A0A0A)
     val goldLight = Color(0xFFF4D078)
     val goldDark = Color(0xFF8B6914)
@@ -225,9 +230,8 @@ private fun ClassicRadioIcon(
     Canvas(modifier = Modifier.size(180.dp)) {
         val w = size.width
         val h = size.height
-        val stroke = Stroke(width = 4.dp.toPx())
 
-        // ===== 1. الهوائي =====
+        // الهوائي
         val antennaStart = Offset(w * 0.62f, h * 0.30f)
         val antennaEnd = Offset(w * 0.90f, h * 0.12f)
         drawLine(
@@ -235,29 +239,26 @@ private fun ClassicRadioIcon(
             start = antennaStart,
             end = antennaEnd,
             strokeWidth = 4.dp.toPx(),
-            cap = androidx.compose.ui.graphics.StrokeCap.Round
+            cap = StrokeCap.Round
         )
-        // كرة صغيرة في نهاية الهوائي
         drawCircle(
             color = goldLight,
             radius = w * 0.025f,
             center = antennaEnd
         )
 
-        // ===== 2. جسم الراديو (مستطيل أسود بإطار ذهبي) =====
+        // جسم الراديو
         val bodyLeft = w * 0.15f
         val bodyTop = h * 0.32f
         val bodyRight = w * 0.85f
         val bodyBottom = h * 0.82f
 
-        // خلفية الراديو (أسود)
         drawRoundRect(
             color = radioBlack,
             topLeft = Offset(bodyLeft, bodyTop),
             size = Size(bodyRight - bodyLeft, bodyBottom - bodyTop),
             cornerRadius = CornerRadius(12.dp.toPx())
         )
-        // الإطار الذهبي
         drawRoundRect(
             color = goldDark,
             topLeft = Offset(bodyLeft, bodyTop),
@@ -266,7 +267,7 @@ private fun ClassicRadioIcon(
             style = Stroke(width = 3.dp.toPx())
         )
 
-        // ===== 3. شاشة الترددات (يمين أعلى) =====
+        // شاشة الترددات
         val screenLeft = w * 0.50f
         val screenTop = h * 0.40f
         val screenRight = w * 0.78f
@@ -286,7 +287,6 @@ private fun ClassicRadioIcon(
             style = Stroke(width = 1.5.dp.toPx())
         )
 
-        // خطوط التردد الرمادية
         for (i in 1..4) {
             val x = screenLeft + (screenRight - screenLeft) * i / 5f
             drawLine(
@@ -297,17 +297,16 @@ private fun ClassicRadioIcon(
             )
         }
 
-        // المؤشر الأحمر (مؤشر المحطة)
         val needleX = screenLeft + (screenRight - screenLeft) * 0.6f
         drawLine(
             color = redBright,
             start = Offset(needleX, screenTop + h * 0.01f),
             end = Offset(needleX, screenBottom - h * 0.01f),
             strokeWidth = 2.5.dp.toPx(),
-            cap = androidx.compose.ui.graphics.StrokeCap.Round
+            cap = StrokeCap.Round
         )
 
-        // ===== 4. الذبذبات (أشرطة حمراء-برتقالية) - على يسار الراديو =====
+        // الذبذبات
         val barWidth = w * 0.040f
         val barSpacing = w * 0.022f
         val startX = w * 0.20f
@@ -329,24 +328,21 @@ private fun ClassicRadioIcon(
             )
         }
 
-        // ===== 5. قرص التوليف (دائرة ذهبية يمين أسفل) =====
+        // قرص التوليف
         val knobCenter = Offset(w * 0.70f, h * 0.66f)
         val knobRadius = w * 0.075f
 
-        // خلفية القرص (أسود)
         drawCircle(
             color = Color(0xFF1A1A1A),
             radius = knobRadius,
             center = knobCenter
         )
-        // حلقة ذهبية
         drawCircle(
             color = goldDark,
             radius = knobRadius,
             center = knobCenter,
             style = Stroke(width = 2.dp.toPx())
         )
-        // قرص ذهبي لامع
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(goldLight, goldDark),
@@ -359,7 +355,6 @@ private fun ClassicRadioIcon(
     }
 }
 
-// ✅ ذبذبات ناعمة
 @Composable
 private fun PulseRings() {
     val transition = rememberInfiniteTransition(label = "pulse")
@@ -420,7 +415,6 @@ private fun PulseRings() {
     )
 }
 
-// ✅ زر مع تأثير التركيز
 @Composable
 private fun FocusableControlIcon(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
