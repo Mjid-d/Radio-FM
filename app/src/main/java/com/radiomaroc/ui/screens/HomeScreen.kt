@@ -2,7 +2,6 @@ package com.radiomaroc.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,14 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,21 +40,8 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val station = currentStation ?: vm.stations.firstOrNull()
     val index = vm.stations.indexOf(station).coerceAtLeast(0)
 
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF0A2A28),
-            Color(0xFF051A18),
-            Color(0xFF030706)
-        )
-    )
-
-    // نفس التدرج للأيقونة
-    val iconGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF0A2A28),
-            Color(0xFF030706)
-        )
-    )
+    // ✅ لون واحد ثابت بدون تدرج
+    val backgroundColor = Color(0xFF030706)
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -68,7 +50,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                 title = {
                     Text(
                         text = station?.name ?: "radio FM",
-                        color = GoldPrimary,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                         maxLines = 1
@@ -94,7 +76,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundBrush)
+                .background(backgroundColor) // ✅ لون واحد بدون تدرج
                 .padding(padding)
         ) {
             Column(
@@ -122,33 +104,22 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         modifier = Modifier
                             .size(180.dp)
                             .clip(CircleShape)
-                            .background(
-                                Brush.radialGradient(
-                                    colors = listOf(Color.White, Color(0xFFE8F0EE))
-                                )
-                            )
-                            .border(3.dp, GoldPrimary.copy(alpha = 0.3f), CircleShape),
+                            .background(Color.White), // ✅ لون أبيض ثابت بدون تدرج
                         contentAlignment = Alignment.Center
                     ) {
-                        // ✅ أيقونة الراديو مع التدرج اللوني (الطريقة الصحيحة)
+                        // أيقونة الراديو بلون داكن ثابت
                         Icon(
                             imageVector = Icons.Default.Radio,
                             contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(110.dp)
-                                .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                                .drawWithContent {
-                                    drawContent()
-                                    drawRect(brush = iconGradient, blendMode = BlendMode.SrcIn)
-                                }
+                            tint = backgroundColor, // ✅ نفس لون الخلفية
+                            modifier = Modifier.size(110.dp)
                         )
                     }
                 }
 
                 Text(
                     text = "TRACK ${String.format("%02d", index + 1)}",
-                    color = GoldPrimary.copy(alpha = 0.7f),
+                    color = Color.White.copy(alpha = 0.6f),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 4.sp
@@ -170,7 +141,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(20.dp))
 
-                // ===== أزرار التحكم =====
+                // ===== أزرار التحكم (بدون دوائر أو إطارات) =====
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -178,9 +149,13 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ControlIcon(Icons.Default.FavoriteBorder) { }
-                    ControlIcon(Icons.Default.Equalizer) { }
+                    // 1. المفضلة
+                    SimpleIconButton(Icons.Default.FavoriteBorder) { }
 
+                    // 2. المعادل
+                    SimpleIconButton(Icons.Default.Equalizer) { }
+
+                    // 3. تشغيل/إيقاف (كبير - الدائرة البيضاء فقط هنا)
                     var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
@@ -198,14 +173,17 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                             Icon(
                                 imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = DarkBackground,
+                                tint = backgroundColor,
                                 modifier = Modifier.size(40.dp)
                             )
                         }
                     }
 
-                    ControlIcon(Icons.Default.SkipPrevious) { vm.previousStation() }
-                    ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
+                    // 4. السابق
+                    SimpleIconButton(Icons.Default.SkipPrevious) { vm.previousStation() }
+
+                    // 5. التالي
+                    SimpleIconButton(Icons.Default.SkipNext) { vm.nextStation() }
                 }
             }
         }
@@ -261,7 +239,7 @@ private fun PulseRings() {
             .scale(scale1)
             .alpha(alpha1)
             .clip(CircleShape)
-            .background(GoldPrimary)
+            .background(Color.White)
     )
     Box(
         modifier = Modifier
@@ -269,12 +247,13 @@ private fun PulseRings() {
             .scale(scale2)
             .alpha(alpha2)
             .clip(CircleShape)
-            .background(GoldPrimary)
+            .background(Color.White)
     )
 }
 
+// ✅ زر بسيط بدون دائرة أو إطار
 @Composable
-private fun ControlIcon(
+private fun SimpleIconButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
@@ -284,24 +263,14 @@ private fun ControlIcon(
         onClick = onClick,
         modifier = Modifier
             .size(52.dp)
-            .clip(CircleShape)
-            .background(
-                if (focused) GoldPrimary.copy(alpha = 0.3f)
-                else Color.White.copy(alpha = 0.1f)
-            )
-            .border(
-                1.dp,
-                if (focused) GoldPrimary else Color.White.copy(alpha = 0.2f),
-                CircleShape
-            )
             .onFocusChanged { focused = it.isFocused }
             .focusable()
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (focused) GoldPrimary else Color.White,
-            modifier = Modifier.size(24.dp)
+            tint = if (focused) GoldPrimary else Color.White, // ✅ الأبيض عادي، ذهبي عند التركيز
+            modifier = Modifier.size(30.dp) // ✅ حجم أكبر قليلاً للأيقونة فقط
         )
     }
 }
