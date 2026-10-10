@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,11 +39,11 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     val station = currentStation ?: vm.stations.firstOrNull()
     val index = vm.stations.indexOf(station).coerceAtLeast(0)
 
-    // ✅ لون واحد ثابت بدون تدرج
-    val backgroundColor = Color(0xFF030706)
+    // ✅ لون أسود كامل للخلفية (موحد مع أشرطة النظام)
+    val backgroundColor = Color.Black
 
     Scaffold(
-        containerColor = Color.Transparent,
+        containerColor = backgroundColor,
         topBar = {
             TopAppBar(
                 title = {
@@ -69,14 +68,14 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         Icon(Icons.Default.Settings, "إعدادات", tint = Color.White)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
             )
         }
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor) // ✅ لون واحد بدون تدرج
+                .background(backgroundColor)
                 .padding(padding)
         ) {
             Column(
@@ -104,14 +103,13 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         modifier = Modifier
                             .size(180.dp)
                             .clip(CircleShape)
-                            .background(Color.White), // ✅ لون أبيض ثابت بدون تدرج
+                            .background(Color.White),
                         contentAlignment = Alignment.Center
                     ) {
-                        // أيقونة الراديو بلون داكن ثابت
                         Icon(
                             imageVector = Icons.Default.Radio,
                             contentDescription = null,
-                            tint = backgroundColor, // ✅ نفس لون الخلفية
+                            tint = backgroundColor,
                             modifier = Modifier.size(110.dp)
                         )
                     }
@@ -141,7 +139,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(20.dp))
 
-                // ===== أزرار التحكم (بدون دوائر أو إطارات) =====
+                // ===== أزرار التحكم =====
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,7 +153,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     // 2. المعادل
                     SimpleIconButton(Icons.Default.Equalizer) { }
 
-                    // 3. تشغيل/إيقاف (كبير - الدائرة البيضاء فقط هنا)
+                    // 3. تشغيل/إيقاف (كبير - دائرة بيضاء)
                     var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
@@ -269,8 +267,8 @@ private fun SimpleIconButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (focused) GoldPrimary else Color.White, // ✅ الأبيض عادي، ذهبي عند التركيز
-            modifier = Modifier.size(30.dp) // ✅ حجم أكبر قليلاً للأيقونة فقط
+            tint = if (focused) GoldPrimary else Color.White,
+            modifier = Modifier.size(30.dp)
         )
     }
 }
