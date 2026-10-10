@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.BlendMode
@@ -112,7 +113,6 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    // ✅ الذبذبات فقط عند التشغيل
                     if (isPlaying) {
                         PulseRings()
                     }
@@ -130,26 +130,19 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                             .border(3.dp, GoldPrimary.copy(alpha = 0.3f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        // ✅ أيقونة الراديو مع التدرج اللوني
-                        Box(
+                        // ✅ أيقونة الراديو مع التدرج اللوني (الطريقة الصحيحة)
+                        Icon(
+                            imageVector = Icons.Default.Radio,
+                            contentDescription = null,
+                            tint = Color.White,
                             modifier = Modifier
                                 .size(110.dp)
                                 .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                        ) {
-                            // 1. رسم الأيقونة باللون الأبيض
-                            Icon(
-                                imageVector = Icons.Default.Radio,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                            // 2. تطبيق التدرج اللوني على الأيقونة
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(iconGradient, blendMode = BlendMode.SrcIn)
-                            )
-                        }
+                                .drawWithContent {
+                                    drawContent()
+                                    drawRect(brush = iconGradient, blendMode = BlendMode.SrcIn)
+                                }
+                        )
                     }
                 }
 
@@ -219,12 +212,11 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
     }
 }
 
-// ✅ ذبذبات ناعمة ومتواصلة (توسع وانقباض مستمر بدون انقطاع)
+// ✅ ذبذبات ناعمة ومتواصلة
 @Composable
 private fun PulseRings() {
     val transition = rememberInfiniteTransition(label = "pulse")
 
-    // الحلقة الأولى (الداخلية)
     val scale1 by transition.animateFloat(
         initialValue = 1f,
         targetValue = 1.25f,
@@ -244,7 +236,6 @@ private fun PulseRings() {
         label = "alpha1"
     )
 
-    // الحلقة الثانية (الخارجية - أبطأ قليلاً)
     val scale2 by transition.animateFloat(
         initialValue = 1.15f,
         targetValue = 1.55f,
@@ -264,7 +255,6 @@ private fun PulseRings() {
         label = "alpha2"
     )
 
-    // رسم الحلقتين
     Box(
         modifier = Modifier
             .size(180.dp)
