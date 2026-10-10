@@ -1,4 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/radiotv"
-    android:gravity="center" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+
+    <!-- خلفية سوداء -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M0,0h320v180h-320z"/>
+
+    <!-- مربع ذهبي بإطار مستدير (وسط) -->
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M110,30 L210,30 Q220,30 220,40 L220,140 Q220,150 210,150 L110,150 Q100,150 100,140 L100,40 Q100,30 110,30 Z"/>
+
+    <!-- الإطار الذهبي الخارجي -->
+    <path
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M110,30 L210,30 Q220,30 220,40 L220,140 Q220,150 210,150 L110,150 Q100,150 100,140 L100,40 Q100,30 110,30 Z"/>
+
+    <!-- الهوائي -->
+    <path
+        android:strokeColor="#F4D078"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M160,30 L200,10"/>
+    <path
+        android:fillColor="#F4D078"
+        android:pathData="M200,10 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"/>
+
+    <!-- خطوط السماعات (يسار) -->
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M112,55 L150,55 L150,58 L112,58 Z M112,62 L150,62 L150,65 L112,65 Z M112,69 L150,69 L150,72 L112,72 Z M112,76 L150,76 L150,79 L112,79 Z M112,83 L150,83 L150,86 L112,86 Z M112,90 L150,90 L150,93 L112,93 Z M112,97 L150,97 L150,100 L112,100 Z M112,104 L150,104 L150,107 L112,107 Z"/>
+
+    <!-- شاشة الترددات (يمين أعلى) -->
+    <path
+        android:fillColor="#1A1A1A"
+        android:strokeColor="#8B6914"
+        android:strokeWidth="1.5"
+        android:pathData="M158,55 L208,55 L208,80 L158,80 Z"/>
+
+    <!-- خطوط الترددات -->
+    <path
+        android:strokeColor="#666666"
+        android:strokeWidth="1"
+        android:pathData="M163,58 L163,77 M170,58 L170,77 M177,58 L177,77 M184,58 L184,77 M191,58 L191,77 M198,58 L198,77 M205,58 L205,77"/>
+
+    <!-- المؤشر الأحمر -->
+    <path
+        android:strokeColor="#FF3B30"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M185,57 L185,78"/>
+
+    <!-- قرص التوليف الذهبي (يمين أسفل) -->
+    <path
+        android:fillColor="#1A1A1A"
+        android:pathData="M185,110 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0"/>
+    <path
+        android:strokeColor="#8B6914"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:pathData="M185,110 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0"/>
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M185,110 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"/>
+    <path
+        android:fillColor="#F4D078"
+        android:pathData="M185,110 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"/>
+
+    <!-- نص "Radio" (ذهبي) -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M230,60 L230,85 L235,85 L235,78 L244,78 L244,85 L249,85 L249,60 L244,60 L244,73 L235,73 L235,60 Z"/>
+
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M252,60 L252,85 L257,85 L257,73 L265,73 L265,85 L270,85 L270,60 L265,60 L265,68 L257,68 L257,60 Z"/>
+
+    <!-- نص "FM" (أبيض) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M275,60 L275,85 L280,85 L280,75 L289,75 L289,71 L280,71 L280,64 L290,64 L290,60 Z"/>
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M293,60 L293,85 L298,85 L298,68 L305,68 L305,85 L310,85 L310,60 L305,60 L305,64 L298,64 L298,60 Z"/>
+
+</vector>
