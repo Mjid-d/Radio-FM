@@ -3,13 +3,50 @@
     android:height="180dp"
     android:viewportWidth="320"
     android:viewportHeight="180">
+
+    <!-- خلفية سوداء -->
     <path
-        android:fillColor="#030706"
+        android:fillColor="#000000"
         android:pathData="M0,0h320v180h-320z"/>
+
+    <!-- الدائرة البيضاء -->
     <path
-        android:fillColor="#F4D078"
-        android:pathData="M60,60 C46,60 34,72 34,86 C34,100 46,112 60,112 C74,112 86,100 86,86 C86,72 74,60 60,60 Z M60,104 C50,104 42,96 42,86 C42,76 50,68 60,68 C70,68 78,76 78,86 C78,96 70,104 60,104 Z"/>
+        android:fillColor="#FFFFFF"
+        android:pathData="M160,90 m-70,0 a70,70 0 1,0 140,0 a70,70 0 1,0 -140,0"/>
+
+    <!-- الهوائي -->
     <path
-        android:fillColor="#F4D078"
-        android:pathData="M60,76 C54,76 50,80 50,86 C50,92 54,96 60,96 C66,96 70,92 70,86 C70,80 66,76 60,76 Z"/>
+        android:strokeColor="#000000"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M175,72 L200,50"/>
+
+    <!-- جسم الراديو -->
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:pathData="M118,75 L202,75 Q205,75 205,78 L205,112 Q205,115 202,115 L118,115 Q115,115 115,112 L115,78 Q115,75 118,75 Z"/>
+
+    <!-- الشاشة -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M125,82 L160,82 L160,89 L125,89 Z"/>
+
+    <!-- قرص التوليف -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M133,102 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0"/>
+
+    <!-- خطوط السماعات -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M170,85 L198,85 L198,89 L170,89 Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M170,93 L198,93 L198,97 L170,97 Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M170,101 L198,101 L198,105 L170,105 Z"/>
+
 </vector>
