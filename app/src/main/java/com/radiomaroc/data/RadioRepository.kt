@@ -106,7 +106,32 @@ object RadioRepository {
             category = "Quran 24/7",
             streamUrl = "https://backup.qurango.net/radio/saud_alshuraim/",
             logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
-        ),
+       ),
+        RadioStation(
+            id = "shuraim",
+            name = "إدريس أبكر",
+            city = "المغرب",
+            category = "Quran 24/7",
+            streamUrl = "https://backup.qurango.net/radio/idrees_abkr",
+            logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
+       ),
+        RadioStation(
+            id = "shuraim",
+            name = "سعد الغامدي",
+            city = "المغرب",
+            category = "Quran 24/7",
+            streamUrl = "https://backup.qurango.net/radio/saad_alghamdi",
+            logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
+       ),
+        RadioStation(
+            id = "shuraim",
+            name = "سعود الشريم",
+            city = "المغرب",
+            category = "Quran 24/7",
+            streamUrl = "https://backup.qurango.net/radio/saud_alshuraim",
+            logoUrl = "https://l.top4top.io/p_3711mmrw80.jpg"
+       ),
+        
     )
 
     val cities: List<String> = listOf("الكل") + moroccanStations.map { it.city }.distinct()
