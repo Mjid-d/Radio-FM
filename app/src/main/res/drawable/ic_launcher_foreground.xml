@@ -1,36 +1,97 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- الهوائي -->
+    <!-- الدائرة البيضاء في الخلف -->
     <path
-        android:strokeColor="#F4D078"
-        android:strokeWidth="3"
-        android:strokeLineCap="round"
-        android:pathData="M64,36 L86,14" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,20 C34,20 18,36 18,54 C18,72 34,88 54,88 C74,88 90,72 90,54 C90,36 74,20 54,20 Z"/>
 
-    <!-- جسم الراديو -->
-    <path
-        android:fillColor="#F4D078"
-        android:pathData="M26,36 L82,36 Q86,36 86,40 L86,86 Q86,90 82,90 L26,90 Q22,90 22,86 L22,40 Q22,36 26,36 Z" />
+    <!-- خط الراديو (الهوائي) -->
+    <path android:pathData="M62,40 L72,28">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="40" android:startY="20"
+                android:endX="88" android:endY="88"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+        <aapt:attr name="android:strokeWidth">
+            <item android:value="2.5"/>
+        </aapt:attr>
+    </path>
 
-    <!-- الشاشة الداخلية الداكنة -->
-    <path
-        android:fillColor="#000000"
-        android:pathData="M27,41 L81,41 L81,85 L27,85 Z" />
+    <!-- جسم الراديو (الإطار الخارجي) -->
+    <path android:pathData="M38,42 L70,42 Q73,42 73,45 L73,68 Q73,71 70,71 L38,71 Q35,71 35,68 L35,45 Q35,42 38,42 Z">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="40" android:startY="20"
+                android:endX="88" android:endY="88"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+        <aapt:attr name="android:strokeWidth">
+            <item android:value="2.5"/>
+        </aapt:attr>
+    </path>
+
+    <!-- الشاشة الداخلية -->
+    <path android:pathData="M40,47 L55,47 L55,53 L40,53 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="40" android:startY="20"
+                android:endX="88" android:endY="88"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+    </path>
 
     <!-- قرص التوليف -->
-    <path
-        android:fillColor="#F4D078"
-        android:pathData="M42,63 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0" />
-    <path
-        android:fillColor="#000000"
-        android:pathData="M42,63 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+    <path android:pathData="M46,62 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="40" android:startY="20"
+                android:endX="88" android:endY="88"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+    </path>
 
-    <!-- خطوط السماعات -->
-    <path android:fillColor="#F4D078" android:pathData="M59,55 L76,55 Q78,55 78,57.5 Q78,60 76,60 L59,60 Q57,60 57,57.5 Q57,55 59,55 Z" />
-    <path android:fillColor="#F4D078" android:pathData="M59,64 L76,64 Q78,64 78,66.5 Q78,69 76,69 L59,69 Q57,69 57,66.5 Q57,64 59,64 Z" />
-    <path android:fillColor="#F4D078" android:pathData="M59,73 L76,73 Q78,73 78,75.5 Q78,78 76,78 L59,78 Q57,78 57,75.5 Q57,73 59,73 Z" />
+    <!-- خطوط السماعات (3 خطوط) -->
+    <path android:pathData="M58,54 L68,54 L68,57 L58,57 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startX="40" android:startY="20" android:endX="88" android:endY="88">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M58,60 L68,60 L68,63 L58,63 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startX="40" android:startY="20" android:endX="88" android:endY="88">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M58,66 L68,66 L68,69 L58,69 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startX="40" android:startY="20" android:endX="88" android:endY="88">
+                <item android:offset="0.0" android:color="#00F2FE"/>
+                <item android:offset="1.0" android:color="#FE0979"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
 </vector>
