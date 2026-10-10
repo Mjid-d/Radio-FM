@@ -24,7 +24,6 @@ import java.util.Locale
 class WeatherViewModel(app: Application) : AndroidViewModel(app) {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(app)
-
     private val _weather = MutableStateFlow<WeatherData?>(null)
     val weather: StateFlow<WeatherData?> = _weather
 
@@ -63,11 +62,7 @@ class WeatherViewModel(app: Application) : AndroidViewModel(app) {
 
         val cityUrl = "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=$lat&longitude=$lon&localityLanguage=ar"
         val cityJson = JSONObject(httpGet(cityUrl))
-        val city = cityJson.optString("city").ifEmpty {
-            cityJson.optString("locality").ifEmpty {
-                cityJson.optString("principalSubdivision")
-            }
-        }
+        val city = cityJson.optString("city").ifEmpty { cityJson.optString("locality").ifEmpty { cityJson.optString("principalSubdivision") } }
 
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val currentTime = timeFormat.format(Date())
