@@ -2,8 +2,8 @@
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     android:src="@drawable/radiofm"
     android:gravity="center" />
-
-    <!-- خلفية سوداء -->
+   
+<!-- خلفية سوداء -->
     <path
         android:fillColor="#000000"
         android:pathData="M0,0h320v180h-320z"/>
