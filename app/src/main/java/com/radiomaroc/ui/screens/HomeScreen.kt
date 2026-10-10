@@ -3,6 +3,7 @@ package com.radiomaroc.ui.screens
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -145,7 +147,7 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
 
                 Spacer(Modifier.height(20.dp))
 
-                // ===== أزرار التحكم (بعد التعديل) =====
+                // ===== أزرار التحكم (بدون أي تحريك عند التنقل) =====
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -159,12 +161,15 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                     // 2. المعادل
                     ControlIcon(Icons.Default.Equalizer) { }
 
-                    // 3. تشغيل/إيقاف (كبير)
+                    // 3. تشغيل/إيقاف (كبير) مع تأثير التركيز
+                    var playFocused by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
-                            .size(72.dp)
+                            .size(72.dp) // ✅ الحجم ثابت لا يتغير
                             .clip(CircleShape)
-                            .background(Color.White),
+                            .background(if (playFocused) GoldPrimary else Color.White) // ✅ اللون فقط هو الذي يتغير
+                            .onFocusChanged { playFocused = it.isFocused }
+                            .focusable(),
                         contentAlignment = Alignment.Center
                     ) {
                         IconButton(
@@ -174,16 +179,16 @@ fun HomeScreen(vm: RadioViewModel = viewModel()) {
                             Icon(
                                 imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = DarkBackground,
-                                modifier = Modifier.size(40.dp)
+                                tint = DarkBackground, // ✅ لون الأيقونة ثابت
+                                modifier = Modifier.size(40.dp) // ✅ حجم الأيقونة ثابت
                             )
                         }
                     }
 
-                    // 4. السابق (Prev) - ✅ جديد
+                    // 4. السابق
                     ControlIcon(Icons.Default.SkipPrevious) { vm.previousStation() }
 
-                    // 5. التالي (Next) - ✅ موجود
+                    // 5. التالي
                     ControlIcon(Icons.Default.SkipNext) { vm.nextStation() }
                 }
             }
@@ -224,7 +229,7 @@ private fun PulseRings(isPlaying: Boolean) {
         Box(
             modifier = Modifier
                 .size(180.dp)
-                .scale(scale)
+                .scale(scale) // ✅ التحريك مسموح هنا فقط للنبض
                 .alpha(alpha)
                 .clip(CircleShape)
                 .background(GoldPrimary.copy(alpha = 0.4f))
@@ -237,19 +242,30 @@ private fun ControlIcon(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
+    var focused by remember { mutableStateOf(false) }
+
     IconButton(
         onClick = onClick,
         modifier = Modifier
-            .size(52.dp)
+            .size(52.dp) // ✅ الحجم ثابت لا يتغير
             .clip(CircleShape)
-            .background(Color.White.copy(alpha = 0.1f))
-            .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
+            .background(
+                if (focused) GoldPrimary.copy(alpha = 0.3f) // ✅ اللون فقط هو الذي يتغير
+                else Color.White.copy(alpha = 0.1f)
+            )
+            .border(
+                1.dp,
+                if (focused) GoldPrimary else Color.White.copy(alpha = 0.2f), // ✅ الحدود فقط تتغير
+                CircleShape
+            )
+            .onFocusChanged { focused = it.isFocused }
+            .focusable()
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
+            tint = if (focused) GoldPrimary else Color.White, // ✅ لون الأيقونة يتغير
+            modifier = Modifier.size(24.dp) // ✅ حجم الأيقونة ثابت
         )
     }
 }
